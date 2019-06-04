@@ -10,6 +10,7 @@ namespace Quote_Retriever
     {
         static void Main(string[] args)
         {
+
         }
     }
 }

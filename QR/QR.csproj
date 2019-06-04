@@ -49,6 +49,12 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Framework.Generic\Framework.Generic\Framework.Generic.csproj">
+      <Project>{90236ce3-7b97-457a-8bc2-9acaed973488}</Project>
+      <Name>Framework.Generic</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\tools\Build-Cleanup-Targets.targets" />
 </Project>
