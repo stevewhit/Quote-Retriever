@@ -52,9 +52,28 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="Database Scripts\Build-Database.bat" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Database Scripts\Creation Scripts\0 - Create Database.sql" />
+    <Content Include="Database Scripts\Creation Scripts\0DEV - Create Development Database.sql" />
+    <Content Include="Database Scripts\Creation Scripts\1 - Security\0 - Create Login User StockMarketDataAdmin.sql" />
+    <Content Include="Database Scripts\Creation Scripts\1 - Security\1 - Create Database User StockMarketDataAdmin.sql" />
+    <Content Include="Database Scripts\Creation Scripts\2 - Tables\1 - Create ApplicationLog Table.sql" />
+    <Content Include="Database Scripts\Creation Scripts\2 - Tables\2 - Create Company Table.sql" />
+    <Content Include="Database Scripts\Creation Scripts\2 - Tables\3 - Create Quote Table.sql" />
+    <Content Include="Database Scripts\Creation Scripts\3 - Stored Procedures\1 - Create ApplicationLogInsert.sql" />
+    <Content Include="Database Scripts\Creation Scripts\3 - Stored Procedures\2 - Create ApplicationLogSelect.sql" />
+    <Content Include="Database Scripts\Creation Scripts\4 - Data Population\1 - Populate Company Table.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Database Scripts\Delta Scripts\1 - Security\" />
+    <Folder Include="Database Scripts\Delta Scripts\2 - Tables\" />
+    <Folder Include="Database Scripts\Delta Scripts\3 - Stored Procedures\" />
+    <Folder Include="Database Scripts\Delta Scripts\4 - Data Population\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\tools\Build-Cleanup-Targets.targets" />
