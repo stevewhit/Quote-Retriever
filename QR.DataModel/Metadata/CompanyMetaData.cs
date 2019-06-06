@@ -19,7 +19,7 @@ namespace QR.DataModel
             return Clone();
         }
     }
-
+    
     public class CompanyMetaData
     {
         [Key]

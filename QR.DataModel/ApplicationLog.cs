@@ -10,7 +10,6 @@
 namespace QR.DataModel
 {
     using System;
-    using System.Collections.Generic;
     
     public partial class ApplicationLog
     {
