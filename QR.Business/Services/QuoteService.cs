@@ -35,6 +35,9 @@ namespace QR.Business.Services
         /// <returns>Returns quotes stored in the repository.</returns>
         public IDbSet<T> GetQuotes()
         {
+            if (_isDisposed)
+                throw new ObjectDisposedException("Repository", "The repository has been disposed.");
+
             return _repository.GetEntities();
         }
 
@@ -54,6 +57,9 @@ namespace QR.Business.Services
         /// <param name="quote">The quote that is to be added.</param>
         public void Add(T quote)
         {
+            if (_isDisposed)
+                throw new ObjectDisposedException("Repository", "The repository has been disposed.");
+
             if (quote == null)
                 throw new ArgumentNullException("quote");
 
@@ -67,9 +73,12 @@ namespace QR.Business.Services
         /// <param name="quote">The quote that is to be updated.</param>
         public void Update(T quote)
         {
+            if (_isDisposed)
+                throw new ObjectDisposedException("Repository", "The repository has been disposed.");
+
             if (quote == null)
                 throw new ArgumentNullException("quote");
-
+            
             _repository.Update(quote);
             _repository.SaveChanges();
         }
@@ -94,6 +103,9 @@ namespace QR.Business.Services
         /// <param name="quote">The quote that is to be deleted.</param>
         public void Delete(T quote)
         {
+            if (_isDisposed)
+                throw new ObjectDisposedException("Repository", "The repository has been disposed.");
+
             if (quote == null)
                 throw new ArgumentNullException("quote");
 
