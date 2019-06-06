@@ -2,9 +2,11 @@
 using QR.DataModel;
 using System;
 using System.Data.Entity;
+using System.Diagnostics.CodeAnalysis;
 
 namespace QR.Business.Tests.Builders
 {
+    [ExcludeFromCodeCoverage]
     public class TestCompany : Company, ITestEntity
     {
         public Guid TestId { get; private set; }
