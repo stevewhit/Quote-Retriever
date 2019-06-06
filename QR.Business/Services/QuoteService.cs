@@ -23,6 +23,9 @@ namespace QR.Business.Services
 
         public QuoteService(IEfRepository<T> repository)
         {
+            if (repository == null)
+                throw new ArgumentNullException("repository");
+
             _repository = repository;
         }
                 
@@ -51,6 +54,9 @@ namespace QR.Business.Services
         /// <param name="quote">The quote that is to be added.</param>
         public void Add(T quote)
         {
+            if (quote == null)
+                throw new ArgumentNullException("quote");
+
             _repository.Create(quote);
             _repository.SaveChanges();
         }
@@ -61,6 +67,9 @@ namespace QR.Business.Services
         /// <param name="quote">The quote that is to be updated.</param>
         public void Update(T quote)
         {
+            if (quote == null)
+                throw new ArgumentNullException("quote");
+
             _repository.Update(quote);
             _repository.SaveChanges();
         }
@@ -85,6 +94,9 @@ namespace QR.Business.Services
         /// <param name="quote">The quote that is to be deleted.</param>
         public void Delete(T quote)
         {
+            if (quote == null)
+                throw new ArgumentNullException("quote");
+
             _repository.Delete(quote);
             _repository.SaveChanges();
         }
