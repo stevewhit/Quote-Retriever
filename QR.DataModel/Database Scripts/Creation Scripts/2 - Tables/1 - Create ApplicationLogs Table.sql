@@ -1,8 +1,8 @@
-IF NOT EXISTS (SELECT * FROM sys.tables WHERE NAME = 'ApplicationLog')
+IF NOT EXISTS (SELECT * FROM sys.tables WHERE NAME = 'ApplicationLogs')
 BEGIN
-	PRINT 'Creating table "ApplicationLog"..'
+	PRINT 'Creating table "ApplicationLogs"..'
 
-	CREATE TABLE [dbo].[ApplicationLog](
+	CREATE TABLE [dbo].[ApplicationLogs](
 		[Id] [int] IDENTITY(1,1) NOT NULL,
 		[Date] [datetime] NULL,
 		[Thread] [nvarchar](255) NULL,
@@ -12,13 +12,13 @@ BEGIN
 		[Exception] [nvarchar](max) NULL,
 		[Location] [nvarchar](255) NULL,
 		[UserId] [nvarchar](255) NULL,
-	 CONSTRAINT [PK_ApplicationLog] PRIMARY KEY CLUSTERED 
+	 CONSTRAINT [PK_ApplicationLogs] PRIMARY KEY CLUSTERED 
 	(
 		[Id] ASC
 	)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 	) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 END
 ELSE
-	PRINT 'The table "ApplicationLog" already exists.'
+	PRINT 'The table "ApplicationLogs" already exists.'
 
 

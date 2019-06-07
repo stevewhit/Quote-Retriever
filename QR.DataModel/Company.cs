@@ -21,6 +21,7 @@ namespace QR.DataModel
         }
     
         public int Id { get; set; }
+        public bool RetrieveQuotesFlag { get; set; }
         public string Symbol { get; set; }
         public string Name { get; set; }
         public string Exchange { get; set; }

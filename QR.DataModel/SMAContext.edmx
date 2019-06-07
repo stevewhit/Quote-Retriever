@@ -4,8 +4,8 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="QR.DataModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
-        <EntityType Name="ApplicationLog">
+    <Schema Namespace="QR.DataModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="ApplicationLogs">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
@@ -19,11 +19,12 @@
           <Property Name="Location" Type="nvarchar" MaxLength="255" />
           <Property Name="UserId" Type="nvarchar" MaxLength="255" />
         </EntityType>
-        <EntityType Name="Company">
+        <EntityType Name="Companys">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RetrieveQuotesFlag" Type="bit" Nullable="false" />
           <Property Name="Symbol" Type="nvarchar" MaxLength="20" Nullable="false" />
           <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Exchange" Type="nvarchar" MaxLength="20" />
@@ -33,7 +34,7 @@
           <Property Name="Sector" Type="nvarchar" MaxLength="50" />
           <Property Name="Tags" Type="nvarchar" MaxLength="1000" />
         </EntityType>
-        <EntityType Name="Quote">
+        <EntityType Name="Quotes">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
@@ -45,15 +46,16 @@
           <Property Name="High" Type="decimal" Precision="10" Scale="2" />
           <Property Name="Low" Type="decimal" Precision="10" Scale="2" />
           <Property Name="Volume" Type="bigint" />
+          <Property Name="LastModifiedDate" Type="datetime" />
         </EntityType>
-        <Association Name="FK_Quote_Company">
-          <End Role="Company" Type="Self.Company" Multiplicity="1" />
-          <End Role="Quote" Type="Self.Quote" Multiplicity="*" />
+        <Association Name="FK_Quotes_Companys">
+          <End Role="Companys" Type="Self.Companys" Multiplicity="1" />
+          <End Role="Quotes" Type="Self.Quotes" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Company">
+            <Principal Role="Companys">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="Quote">
+            <Dependent Role="Quotes">
               <PropertyRef Name="CompanyId" />
             </Dependent>
           </ReferentialConstraint>
@@ -70,19 +72,49 @@
         </Function>
         <Function Name="ApplicationLogSelect" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <EntityContainer Name="QRDataModelStoreContainer">
-          <EntitySet Name="ApplicationLog" EntityType="Self.ApplicationLog" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Company" EntityType="Self.Company" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Quote" EntityType="Self.Quote" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK_Quote_Company" Association="Self.FK_Quote_Company">
-            <End Role="Company" EntitySet="Company" />
-            <End Role="Quote" EntitySet="Quote" />
+          <EntitySet Name="ApplicationLogs" EntityType="Self.ApplicationLogs" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Companys" EntityType="Self.Companys" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Quotes" EntityType="Self.Quotes" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Quotes_Companys" Association="Self.FK_Quotes_Companys">
+            <End Role="Companys" EntitySet="Companys" />
+            <End Role="Quotes" EntitySet="Quotes" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="QR.DataModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="SMAContext" annotation:LazyLoadingEnabled="true">
+          <FunctionImport Name="ApplicationLogInsert">
+            <Parameter Name="logDate" Mode="In" Type="DateTime" />
+            <Parameter Name="thread" Mode="In" Type="String" />
+            <Parameter Name="logLevel" Mode="In" Type="String" />
+            <Parameter Name="logger" Mode="In" Type="String" />
+            <Parameter Name="message" Mode="In" Type="String" />
+            <Parameter Name="exception" Mode="In" Type="String" />
+            <Parameter Name="location" Mode="In" Type="String" />
+            <Parameter Name="userId" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="ApplicationLogSelect" ReturnType="Collection(QR.DataModel.ApplicationLogSelect_Result)" />
+          <EntitySet Name="ApplicationLogs" EntityType="QR.DataModel.ApplicationLog" />
+          <EntitySet Name="Companys" EntityType="QR.DataModel.Company" />
+          <EntitySet Name="Quotes" EntityType="QR.DataModel.Quote" />
+          <AssociationSet Name="FK_Quotes_Companys" Association="QR.DataModel.FK_Quotes_Companys">
+            <End Role="Company" EntitySet="Companys" />
+            <End Role="Quote" EntitySet="Quotes" />
+          </AssociationSet>
+        </EntityContainer>
+        <ComplexType Name="ApplicationLogSelect_Result">
+          <Property Type="Int32" Name="Id" Nullable="false" />
+          <Property Type="DateTime" Name="Date" Nullable="true" Precision="23" />
+          <Property Type="String" Name="Thread" Nullable="true" MaxLength="255" />
+          <Property Type="String" Name="Level" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Logger" Nullable="true" MaxLength="255" />
+          <Property Type="String" Name="Message" Nullable="true" />
+          <Property Type="String" Name="Exception" Nullable="true" />
+          <Property Type="String" Name="Location" Nullable="true" MaxLength="255" />
+          <Property Type="String" Name="UserId" Nullable="true" MaxLength="255" />
+        </ComplexType>
         <EntityType Name="ApplicationLog">
           <Key>
             <PropertyRef Name="Id" />
@@ -102,15 +134,16 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Symbol" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="RetrieveQuotesFlag" Type="Boolean" Nullable="false" />
+          <Property Name="Symbol" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Exchange" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Industry" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
           <Property Name="Website" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Sector" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Tags" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Quotes" Relationship="Self.FK_Quote_Company" FromRole="Company" ToRole="Quote" />
+          <NavigationProperty Name="Quotes" Relationship="QR.DataModel.FK_Quotes_Companys" FromRole="Company" ToRole="Quote" />
         </EntityType>
         <EntityType Name="Quote">
           <Key>
@@ -120,15 +153,16 @@
           <Property Name="CompanyId" Type="Int32" Nullable="false" />
           <Property Name="Date" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="Open" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="Close" Type="Decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="Close" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
           <Property Name="High" Type="Decimal" Precision="10" Scale="2" />
           <Property Name="Low" Type="Decimal" Precision="10" Scale="2" />
           <Property Name="Volume" Type="Int64" />
-          <NavigationProperty Name="Company" Relationship="Self.FK_Quote_Company" FromRole="Quote" ToRole="Company" />
+          <Property Name="LastModifiedDate" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Company" Relationship="QR.DataModel.FK_Quotes_Companys" FromRole="Quote" ToRole="Company" />
         </EntityType>
-        <Association Name="FK_Quote_Company">
-          <End Role="Company" Type="Self.Company" Multiplicity="1" />
-          <End Role="Quote" Type="Self.Quote" Multiplicity="*" />
+        <Association Name="FK_Quotes_Companys">
+          <End Type="QR.DataModel.Company" Role="Company" Multiplicity="1" />
+          <End Type="QR.DataModel.Quote" Role="Quote" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Company">
               <PropertyRef Name="Id" />
@@ -138,87 +172,12 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="SMAContext" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="ApplicationLogs" EntityType="Self.ApplicationLog" />
-          <EntitySet Name="Companies" EntityType="Self.Company" />
-          <EntitySet Name="Quotes" EntityType="Self.Quote" />
-          <AssociationSet Name="FK_Quote_Company" Association="Self.FK_Quote_Company">
-            <End Role="Company" EntitySet="Companies" />
-            <End Role="Quote" EntitySet="Quotes" />
-          </AssociationSet>
-          <FunctionImport Name="ApplicationLogInsert">
-            <Parameter Name="logDate" Mode="In" Type="DateTime" />
-            <Parameter Name="thread" Mode="In" Type="String" />
-            <Parameter Name="logLevel" Mode="In" Type="String" />
-            <Parameter Name="logger" Mode="In" Type="String" />
-            <Parameter Name="message" Mode="In" Type="String" />
-            <Parameter Name="exception" Mode="In" Type="String" />
-            <Parameter Name="location" Mode="In" Type="String" />
-            <Parameter Name="userId" Mode="In" Type="String" />
-          </FunctionImport>
-          <FunctionImport Name="ApplicationLogSelect" ReturnType="Collection(QR.DataModel.ApplicationLogSelect_Result)" />
-        </EntityContainer>
-        <ComplexType Name="ApplicationLogSelect_Result">
-          <Property Type="Int32" Name="Id" Nullable="false" />
-          <Property Type="DateTime" Name="Date" Nullable="true" Precision="23" />
-          <Property Type="String" Name="Thread" Nullable="true" MaxLength="255" />
-          <Property Type="String" Name="Level" Nullable="true" MaxLength="50" />
-          <Property Type="String" Name="Logger" Nullable="true" MaxLength="255" />
-          <Property Type="String" Name="Message" Nullable="true" />
-          <Property Type="String" Name="Exception" Nullable="true" />
-          <Property Type="String" Name="Location" Nullable="true" MaxLength="255" />
-          <Property Type="String" Name="UserId" Nullable="true" MaxLength="255" />
-        </ComplexType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="QRDataModelStoreContainer" CdmEntityContainer="SMAContext">
-          <EntitySetMapping Name="ApplicationLogs">
-            <EntityTypeMapping TypeName="QR.DataModel.ApplicationLog">
-              <MappingFragment StoreEntitySet="ApplicationLog">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="Date" ColumnName="Date" />
-                <ScalarProperty Name="Thread" ColumnName="Thread" />
-                <ScalarProperty Name="Level" ColumnName="Level" />
-                <ScalarProperty Name="Logger" ColumnName="Logger" />
-                <ScalarProperty Name="Message" ColumnName="Message" />
-                <ScalarProperty Name="Exception" ColumnName="Exception" />
-                <ScalarProperty Name="Location" ColumnName="Location" />
-                <ScalarProperty Name="UserId" ColumnName="UserId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Companies">
-            <EntityTypeMapping TypeName="QR.DataModel.Company">
-              <MappingFragment StoreEntitySet="Company">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="Symbol" ColumnName="Symbol" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="Exchange" ColumnName="Exchange" />
-                <ScalarProperty Name="Industry" ColumnName="Industry" />
-                <ScalarProperty Name="Website" ColumnName="Website" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="Sector" ColumnName="Sector" />
-                <ScalarProperty Name="Tags" ColumnName="Tags" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Quotes">
-            <EntityTypeMapping TypeName="QR.DataModel.Quote">
-              <MappingFragment StoreEntitySet="Quote">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="CompanyId" ColumnName="CompanyId" />
-                <ScalarProperty Name="Date" ColumnName="Date" />
-                <ScalarProperty Name="Open" ColumnName="Open" />
-                <ScalarProperty Name="Close" ColumnName="Close" />
-                <ScalarProperty Name="High" ColumnName="High" />
-                <ScalarProperty Name="Low" ColumnName="Low" />
-                <ScalarProperty Name="Volume" ColumnName="Volume" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <FunctionImportMapping FunctionImportName="ApplicationLogInsert" FunctionName="QR.DataModel.Store.ApplicationLogInsert" />
           <FunctionImportMapping FunctionImportName="ApplicationLogSelect" FunctionName="QR.DataModel.Store.ApplicationLogSelect">
             <ResultMapping>
@@ -235,6 +194,52 @@
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
+          <EntitySetMapping Name="ApplicationLogs">
+            <EntityTypeMapping TypeName="QR.DataModel.ApplicationLog">
+              <MappingFragment StoreEntitySet="ApplicationLogs">
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="Location" ColumnName="Location" />
+                <ScalarProperty Name="Exception" ColumnName="Exception" />
+                <ScalarProperty Name="Message" ColumnName="Message" />
+                <ScalarProperty Name="Logger" ColumnName="Logger" />
+                <ScalarProperty Name="Level" ColumnName="Level" />
+                <ScalarProperty Name="Thread" ColumnName="Thread" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Companys">
+            <EntityTypeMapping TypeName="QR.DataModel.Company">
+              <MappingFragment StoreEntitySet="Companys">
+                <ScalarProperty Name="Tags" ColumnName="Tags" />
+                <ScalarProperty Name="Sector" ColumnName="Sector" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Website" ColumnName="Website" />
+                <ScalarProperty Name="Industry" ColumnName="Industry" />
+                <ScalarProperty Name="Exchange" ColumnName="Exchange" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Symbol" ColumnName="Symbol" />
+                <ScalarProperty Name="RetrieveQuotesFlag" ColumnName="RetrieveQuotesFlag" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Quotes">
+            <EntityTypeMapping TypeName="QR.DataModel.Quote">
+              <MappingFragment StoreEntitySet="Quotes">
+                <ScalarProperty Name="LastModifiedDate" ColumnName="LastModifiedDate" />
+                <ScalarProperty Name="Volume" ColumnName="Volume" />
+                <ScalarProperty Name="Low" ColumnName="Low" />
+                <ScalarProperty Name="High" ColumnName="High" />
+                <ScalarProperty Name="Close" ColumnName="Close" />
+                <ScalarProperty Name="Open" ColumnName="Open" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="CompanyId" ColumnName="CompanyId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

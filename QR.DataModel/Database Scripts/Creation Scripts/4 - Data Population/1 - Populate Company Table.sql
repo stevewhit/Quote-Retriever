@@ -1,14 +1,21 @@
-IF NOT EXISTS (SELECT * FROM Company WHERE Symbol='AAPL')
+IF NOT EXISTS (SELECT * FROM Companys WHERE Symbol='AAPL')
 BEGIN
-	PRINT 'Inserting "AAPL" into "Company" table..'
+	PRINT 'Inserting "AAPL" into "Companys" table..'
 
-	INSERT INTO [dbo].[Company]
-         	  ([Symbol]
-          	 ,[Name])
+	INSERT INTO [dbo].[Companys]
+			   ([RetrieveQuotesFlag]
+			   ,[Symbol]
+			   ,[Name]
+			   ,[Exchange]
+			   ,[Industry]
+			   ,[Website]
+			   ,[Description]
+			   ,[Sector]
+			   ,[Tags])
      	VALUES
-              ('AAPL', 'Apple Inc.')
+              (1, 'AAPL', 'Apple Inc.', 'NASDAQ', 'Technology', 'https://www.apple.com', 'Apple sells phone and computer products.', 'Technology', 'AAPL,Apple,Apple Inc.,OSX,iPhone')
 END
 ELSE
-	PRINT '"AAPL" already exists in the "Company" table..'
+	PRINT '"AAPL" already exists in the "Companys" table..'
 
 

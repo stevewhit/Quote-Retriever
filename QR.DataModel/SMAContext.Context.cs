@@ -28,7 +28,7 @@ namespace QR.DataModel
         }
     
         public virtual DbSet<ApplicationLog> ApplicationLogs { get; set; }
-        public virtual DbSet<Company> Companies { get; set; }
+        public virtual DbSet<Company> Companys { get; set; }
         public virtual DbSet<Quote> Quotes { get; set; }
     
         public virtual int ApplicationLogInsert(Nullable<System.DateTime> logDate, string thread, string logLevel, string logger, string message, string exception, string location, string userId)

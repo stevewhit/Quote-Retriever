@@ -22,6 +22,7 @@ namespace QR.DataModel
         public Nullable<decimal> High { get; set; }
         public Nullable<decimal> Low { get; set; }
         public Nullable<long> Volume { get; set; }
+        public Nullable<System.DateTime> LastModifiedDate { get; set; }
     
         public virtual Company Company { get; set; }
     }
