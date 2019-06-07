@@ -72,6 +72,7 @@
     <Compile Include="Builders\TestCompany.cs" />
     <Compile Include="Builders\TestQuote.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\CompanyServiceTest.cs" />
     <Compile Include="Services\QuoteServiceTest.cs" />
   </ItemGroup>
   <ItemGroup>

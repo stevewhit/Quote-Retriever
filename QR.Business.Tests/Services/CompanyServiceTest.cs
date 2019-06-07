@@ -9,20 +9,23 @@ using System.Linq;
 
 namespace QR.Business.Tests.Services
 {
+    /// <summary>
+    /// Summary description for CompanyServiceTest
+    /// </summary>
     [TestClass]
     [ExcludeFromCodeCoverage]
-    public class QuoteServiceTest
+    public class CompanyServiceTest
     {
         private MockEfContext _mockContext;
-        private IEfRepository<TestQuote> _repository;
-        private IQuoteService<TestQuote> _service;
+        private IEfRepository<TestCompany> _repository;
+        private ICompanyService<TestCompany> _service;
 
         [TestInitialize]
         public void Initialize()
         {
-            _mockContext = new MockEfContext(typeof(TestQuote));
-            _repository = new EfRepository<TestQuote>(_mockContext.Object);
-            _service = new QuoteService<TestQuote>(_repository);
+            _mockContext = new MockEfContext(typeof(TestCompany));
+            _repository = new EfRepository<TestCompany>(_mockContext.Object);
+            _service = new CompanyService<TestCompany>(_repository);
         }
 
         [TestCleanup]
@@ -32,117 +35,117 @@ namespace QR.Business.Tests.Services
             _repository.Dispose();
             _service.Dispose();
         }
-        
-        #region Testing QuoteService(IEfRepository<T> repository)
+
+        #region Testing CompanyService(IEfRepository<T> repository)
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void QuoteService_WithNullRepository_ThrowsException()
+        public void CompanyService_WithNullRepository_ThrowsException()
         {
             // Act
-            _service = new QuoteService<TestQuote>(null);
+            _service = new CompanyService<TestCompany>(null);
         }
 
         [TestMethod]
-        public void QuoteService_WithValidRepository_StoresRepository()
+        public void CompanyService_WithValidRepository_StoresRepository()
         {
             // Act
-            var quotes = _service.GetQuotes();
+            var companies = _service.GetCompanies();
 
             // Assert
-            Assert.IsNotNull(quotes);
+            Assert.IsNotNull(companies);
         }
 
         #endregion
-        #region Testing IDbSet<T> GetQuotes()
+        #region Testing IDbSet<T> GetCompanies()
 
         [TestMethod]
         [ExpectedException(typeof(ObjectDisposedException))]
-        public void GetQuotes_AfterDisposed_ThrowsException()
+        public void GetCompanies_AfterDisposed_ThrowsException()
         {
             // Arrange
             _service.Dispose();
 
             // Act
-            var quotes = _service.GetQuotes();
+            var companies = _service.GetCompanies();
         }
 
         [TestMethod]
-        public void GetQuotes_WithValidRepository_ReturnsQuotes()
+        public void GetCompanies_WithValidRepository_ReturnsCompanies()
         {
             // Arrange
-            var quoteToAdd = new TestQuote(999);
-            _repository.Create(quoteToAdd);
-            
+            var companyToAdd = new TestCompany(999);
+            _repository.Create(companyToAdd);
+
             // Act
-            var quotes = _service.GetQuotes();
+            var companies = _service.GetCompanies();
 
             // Assert
-            Assert.IsNotNull(quotes);
-            Assert.IsTrue(quotes.Count() == 1);
+            Assert.IsNotNull(companies);
+            Assert.IsTrue(companies.Count() == 1);
         }
 
         #endregion
-        #region Testing T FindQuote(int id)
+        #region Testing T FindCompany(int id)
 
         [TestMethod]
         [ExpectedException(typeof(ObjectDisposedException))]
-        public void FindQuote_AfterDisposed_ThrowsException()
+        public void FindCompany_AfterDisposed_ThrowsException()
         {
             // Arrange
             _service.Dispose();
 
             // Act
-            var quote = _service.FindQuote(1);
+            var company = _service.FindCompany(1);
         }
 
         [TestMethod]
-        public void FindQuotes_WithValidId_ReturnsQuote()
+        public void FindCompany_WithValidId_ReturnsCompany()
         {
             // Arrange
             var id = 123;
-            var quoteToAdd = new TestQuote()
+            var companyToAdd = new TestCompany()
             {
                 Id = id
             };
-            
-            _repository.Create(quoteToAdd);
+
+            _repository.Create(companyToAdd);
 
             // Act
-            var quote = _service.FindQuote(id);
+            var company = _service.FindCompany(id);
 
             // Assert
-            Assert.IsNotNull(quote);
-            Assert.IsTrue(quote == quoteToAdd);
+            Assert.IsNotNull(company);
+            Assert.IsTrue(company == companyToAdd);
         }
 
         [TestMethod]
-        public void FindQuotes_WithInvalidId_ReturnsNull()
+        public void FindCompany_WithInvalidId_ReturnsNull()
         {
             // Arrange
-            var quoteToAdd = new TestQuote()
+            var companyToAdd = new TestCompany()
             {
                 Id = 123
             };
 
-            _repository.Create(quoteToAdd);
+            _repository.Create(companyToAdd);
 
             // Act
-            var quote = _service.FindQuote(234);
+            var company = _service.FindCompany(234);
 
             // Assert
-            Assert.IsNull(quote);
+            Assert.IsNull(company);
         }
 
         #endregion
-        #region Testing void Add(T quote)
+        #region Testing void Add(T company)
 
         [TestMethod]
         [ExpectedException(typeof(ObjectDisposedException))]
         public void Add_AfterDisposed_ThrowsException()
         {
             // Arrange
-            var quoteToAdd = new TestQuote()
+            var companyToAdd = new TestCompany()
             {
                 Id = 123
             };
@@ -150,44 +153,44 @@ namespace QR.Business.Tests.Services
             _service.Dispose();
 
             // Act
-            _service.Add(quoteToAdd);
+            _service.Add(companyToAdd);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void Add_WithNullQuote_ThrowsException()
+        public void Add_WithNullCompany_ThrowsException()
         {
             // Act
             _service.Add(null);
         }
-        
+
         [TestMethod]
-        public void Add_WithValidQuote_AddsQuoteToRepository()
+        public void Add_WithValidCompany_AddsCompanyToRepository()
         {
             // Arrange
-            var quoteToAdd = new TestQuote()
+            var companyToAdd = new TestCompany()
             {
                 Id = 123
             };
 
             // Act
-            _service.Add(quoteToAdd);
+            _service.Add(companyToAdd);
 
-            var addedQuote = _service.FindQuote(quoteToAdd.Id);
+            var addedCompany = _service.FindCompany(companyToAdd.Id);
 
             // Assert
-            Assert.IsTrue(addedQuote == quoteToAdd);
+            Assert.IsTrue(addedCompany == companyToAdd);
         }
 
         #endregion
-        #region Testing void Update(T quote)
+        #region Testing void Update(T company)
 
         [TestMethod]
         [ExpectedException(typeof(ObjectDisposedException))]
         public void Update_AfterDisposed_ThrowsException()
         {
             // Arrange
-            var quoteToUpdate = new TestQuote()
+            var companyToUpdate = new TestCompany()
             {
                 Id = 123
             };
@@ -195,50 +198,50 @@ namespace QR.Business.Tests.Services
             _service.Dispose();
 
             // Act
-            _service.Update(quoteToUpdate);
+            _service.Update(companyToUpdate);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void Update_WithNullQuote_ThrowsException()
+        public void Update_WithNullCompany_ThrowsException()
         {
             // Act
             _service.Update(null);
         }
-        
+
         [TestMethod]
         [ExpectedException(typeof(NullReferenceException))]
-        public void Update_WithNonExistingQuote_ThrowsException()
+        public void Update_WithNonExistingCompany_ThrowsException()
         {
             // Arrange
-            var quoteToUpdate = new TestQuote()
+            var companyToUpdate = new TestCompany()
             {
                 Id = 123
             };
 
             // Act
-            _service.Update(quoteToUpdate);
+            _service.Update(companyToUpdate);
         }
 
         [TestMethod]
-        public void Update_WithExistingValidQuote_UpdatesQuoteInRepository()
+        public void Update_WithExistingValidCompany_UpdatesCompanyInRepository()
         {
             // Arrange
-            var quoteToUpdate = new TestQuote()
+            var companyToUpdate = new TestCompany()
             {
                 Id = 123
             };
 
-            _service.Add(quoteToUpdate);
+            _service.Add(companyToUpdate);
 
             // Act
-            quoteToUpdate.Id = 234;
-            _service.Update(quoteToUpdate);
+            companyToUpdate.Id = 234;
+            _service.Update(companyToUpdate);
 
-            var updatedQuote = _service.FindQuote(quoteToUpdate.Id);
+            var updatedCompany = _service.FindCompany(companyToUpdate.Id);
 
             // Assert
-            Assert.IsTrue(quoteToUpdate.Id == 234);
+            Assert.IsTrue(companyToUpdate.Id == 234);
         }
 
         #endregion
@@ -249,7 +252,7 @@ namespace QR.Business.Tests.Services
         public void Delete_Id_AfterDisposed_ThrowsException()
         {
             // Arrange
-            var quoteToDelete = new TestQuote()
+            var companyToDelete = new TestCompany()
             {
                 Id = 123
             };
@@ -257,52 +260,52 @@ namespace QR.Business.Tests.Services
             _service.Dispose();
 
             // Act
-            _service.Delete(quoteToDelete.Id);
+            _service.Delete(companyToDelete.Id);
         }
-        
+
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
-        public void Delete_Id_WithNonExistingQuoteId_ThrowsException()
+        public void Delete_Id_WithNonExistingCompanyId_ThrowsException()
         {
             // Arrange
-            var quoteToDelete = new TestQuote()
+            var companyToDelete = new TestCompany()
             {
                 Id = 123
             };
 
             // Act
-            _service.Delete(quoteToDelete.Id);
+            _service.Delete(companyToDelete.Id);
         }
 
         [TestMethod]
-        public void Delete_Id_WithValidQuoteId_DeletesQuoteInRepository()
+        public void Delete_Id_WithValidCompanyId_DeletesCompanyInRepository()
         {
             // Arrange
-            var quoteToDelete = new TestQuote()
+            var companyToDelete = new TestCompany()
             {
                 Id = 123
             };
 
-            _service.Add(quoteToDelete);
+            _service.Add(companyToDelete);
 
             // Act
-            _service.Delete(quoteToDelete.Id);
+            _service.Delete(companyToDelete.Id);
 
-            var deletedQuote = _service.FindQuote(quoteToDelete.Id);
+            var deletedCompany = _service.FindCompany(companyToDelete.Id);
 
             // Assert
-            Assert.IsNull(deletedQuote);
+            Assert.IsNull(deletedCompany);
         }
 
         #endregion
-        #region Testing void Delete(T quote)
+        #region Testing void Delete(T company)
 
         [TestMethod]
         [ExpectedException(typeof(ObjectDisposedException))]
         public void Delete_T_AfterDisposed_ThrowsException()
         {
             // Arrange
-            var quoteToDelete = new TestQuote()
+            var companyToDelete = new TestCompany()
             {
                 Id = 123
             };
@@ -310,12 +313,12 @@ namespace QR.Business.Tests.Services
             _service.Dispose();
 
             // Act
-            _service.Delete(quoteToDelete);
+            _service.Delete(companyToDelete);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void Delete_T_WithNullQuote_ThrowsException()
+        public void Delete_T_WithNullCompany_ThrowsException()
         {
             // Act
             _service.Delete(null);
@@ -323,36 +326,36 @@ namespace QR.Business.Tests.Services
 
         [TestMethod]
         [ExpectedException(typeof(NullReferenceException))]
-        public void Delete_T_WithNonExistingQuoteId_ThrowsException()
+        public void Delete_T_WithNonExistingCompanyId_ThrowsException()
         {
             // Arrange
-            var quoteToDelete = new TestQuote()
+            var companyToDelete = new TestCompany()
             {
                 Id = 123
             };
 
             // Act
-            _service.Delete(quoteToDelete);
+            _service.Delete(companyToDelete);
         }
 
         [TestMethod]
-        public void Delete_T_WithValidQuoteId_DeletesQuoteInRepository()
+        public void Delete_T_WithValidCompanyId_DeletesCompanyInRepository()
         {
             // Arrange
-            var quoteToDelete = new TestQuote()
+            var companyToDelete = new TestCompany()
             {
                 Id = 123
             };
 
-            _service.Add(quoteToDelete);
+            _service.Add(companyToDelete);
 
             // Act
-            _service.Delete(quoteToDelete);
+            _service.Delete(companyToDelete);
 
-            var deletedQuote = _service.FindQuote(quoteToDelete.Id);
+            var deletedCompany = _service.FindCompany(companyToDelete.Id);
 
             // Assert
-            Assert.IsNull(deletedQuote);
+            Assert.IsNull(deletedCompany);
         }
 
         #endregion
@@ -364,7 +367,7 @@ namespace QR.Business.Tests.Services
         {
             // Act
             _service.Dispose();
-            var quotes = _service.GetQuotes();
+            var companies = _service.GetCompanies();
         }
 
         [TestMethod]
@@ -374,9 +377,9 @@ namespace QR.Business.Tests.Services
             // Act
             _service.Dispose();
             _service.Dispose();
-            var quotes = _service.GetQuotes();
+            var companies = _service.GetCompanies();
         }
-        
+
         #endregion
     }
 }
