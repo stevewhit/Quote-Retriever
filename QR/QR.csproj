@@ -33,7 +33,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -48,12 +55,24 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Framework.Generic\Framework.Generic\Framework.Generic.csproj">
       <Project>{90236ce3-7b97-457a-8bc2-9acaed973488}</Project>
       <Name>Framework.Generic</Name>
     </ProjectReference>
+    <ProjectReference Include="..\QR.Business\QR.Business.csproj">
+      <Project>{A7D2E0F0-4461-4C34-A99E-13825ACDD5D4}</Project>
+      <Name>QR.Business</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\QR.DataModel\QR.DataModel.csproj">
+      <Project>{82AF793B-5A7D-458F-A55F-DD96F5CC277D}</Project>
+      <Name>QR.DataModel</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Models\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\tools\Build-Cleanup-Targets.targets" />

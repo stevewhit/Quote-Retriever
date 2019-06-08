@@ -3,6 +3,7 @@ using System;
 using System.Data.Entity;
 using QR.DataModel;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace QR.Business.Services
 {
@@ -10,7 +11,8 @@ namespace QR.Business.Services
     {
         IDbSet<T> GetQuotes();
         T FindQuote(int id);
-        void Add(T quote);        
+        void Add(T quote);
+        void Add(IEnumerable<T> quotes);
         void Update(T quote);
         void Delete(int id);
         void Delete(T quote);
@@ -50,7 +52,7 @@ namespace QR.Business.Services
         {
             return GetQuotes().FirstOrDefault(c => c.Id == id);
         }
-
+        
         /// <summary>
         /// Adds the supplied <paramref name="quote"/> to the repository.
         /// </summary>
@@ -66,7 +68,30 @@ namespace QR.Business.Services
             _repository.Create(quote);
             _repository.SaveChanges();
         }
-        
+
+        /// <summary>
+        /// Adds the supplied <paramref name="quotes"/> to the repository.
+        /// </summary>
+        /// <param name="quotes">The quotes that are to be added.</param>
+        public void Add(IEnumerable<T> quotes)
+        {
+            if (_isDisposed)
+                throw new ObjectDisposedException("Repository", "The repository has been disposed.");
+
+            if (quotes == null)
+                throw new ArgumentNullException("quotes");
+
+            foreach (var quote in quotes)
+            {
+                if (quote == null)
+                    throw new ArgumentNullException("quote");
+
+                _repository.Create(quote);
+            }
+            
+            _repository.SaveChanges();
+        }
+
         /// <summary>
         /// Updates the supplied <paramref name="quote"/> in the repository.
         /// </summary>
@@ -112,7 +137,7 @@ namespace QR.Business.Services
             _repository.Delete(quote);
             _repository.SaveChanges();
         }
-
+        
         /// <summary>
         /// Disposes this object and properly cleans up resources. 
         /// </summary>

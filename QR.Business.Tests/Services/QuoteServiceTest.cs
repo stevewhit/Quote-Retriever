@@ -6,6 +6,7 @@ using QR.Business.Tests.Builders;
 using System.Diagnostics.CodeAnalysis;
 using System;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace QR.Business.Tests.Services
 {
@@ -139,7 +140,7 @@ namespace QR.Business.Tests.Services
 
         [TestMethod]
         [ExpectedException(typeof(ObjectDisposedException))]
-        public void Add_AfterDisposed_ThrowsException()
+        public void Add_Quote_AfterDisposed_ThrowsException()
         {
             // Arrange
             var quoteToAdd = new TestQuote()
@@ -155,14 +156,14 @@ namespace QR.Business.Tests.Services
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void Add_WithNullQuote_ThrowsException()
+        public void Add_Quote_WithNullQuote_ThrowsException()
         {
             // Act
-            _service.Add(null);
+            _service.Add(quote:null);
         }
         
         [TestMethod]
-        public void Add_WithValidQuote_AddsQuoteToRepository()
+        public void Add_Quote_WithValidQuote_AddsQuoteToRepository()
         {
             // Arrange
             var quoteToAdd = new TestQuote()
@@ -177,6 +178,81 @@ namespace QR.Business.Tests.Services
 
             // Assert
             Assert.IsTrue(addedQuote == quoteToAdd);
+        }
+
+        #endregion
+        #region Testing void Add(IEnumerable<T> quotes)
+
+        [TestMethod]
+        [ExpectedException(typeof(ObjectDisposedException))]
+        public void Add_Quotes_AfterDisposed_ThrowsException()
+        {
+            // Arrange
+            var quotesToAdd = new List<TestQuote>
+            {
+                new TestQuote()
+            };
+            
+            _service.Dispose();
+
+            // Act
+            _service.Add(quotesToAdd);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void Add_Quotes_WithNullQuotes_ThrowsException()
+        {
+            // Act
+            _service.Add(quotes:null);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void Add_Quotes_ContainingNullQuote_ThrowsException()
+        {
+            // Arrange
+            var quote1 = new TestQuote();
+            var quote2 = new TestQuote();
+            var quote3 = new TestQuote();
+            TestQuote quote4 = null;
+
+            var quotesToAdd = new List<TestQuote>
+            {
+                quote1, quote2, quote3, quote4
+            };
+
+            // Act
+            _service.Add(quotesToAdd);
+        }
+
+        [TestMethod]
+        public void Add_Quotes_ContainingValidQuotes_AddsQuotes()
+        {
+            // Arrange
+            var quote1 = new TestQuote() { Id = 111 };
+            var quote2 = new TestQuote() { Id = 222 };
+            var quote3 = new TestQuote() { Id = 333 };
+            var quote4 = new TestQuote() { Id = 444 };
+
+            var quotesToAdd = new List<TestQuote>
+            {
+                quote1, quote2, quote3, quote4
+            };
+
+            // Act
+            _service.Add(quotesToAdd);
+
+            var addedQuote1 = _service.FindQuote(quote1.Id);
+            var addedQuote2 = _service.FindQuote(quote2.Id);
+            var addedQuote3 = _service.FindQuote(quote3.Id);
+            var addedQuote4 = _service.FindQuote(quote4.Id);
+
+            // Assert
+            Assert.IsTrue(addedQuote1 == quote1);
+            Assert.IsTrue(addedQuote2 == quote2);
+            Assert.IsTrue(addedQuote3 == quote3);
+            Assert.IsTrue(addedQuote4 == quote4);
         }
 
         #endregion

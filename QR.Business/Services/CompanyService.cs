@@ -9,7 +9,9 @@ namespace QR.Business.Services
     public interface ICompanyService<T> : IDisposable where T : Company
     {
         IDbSet<T> GetCompanies();
+        IQueryable<T> GetCompaniesForQuoteDownload();
         T FindCompany(int id);
+        DateTime? GetMostRecentQuoteDate(T company);
         void Add(T company);
         void Update(T company);
         void Delete(int id);
@@ -42,6 +44,15 @@ namespace QR.Business.Services
         }
 
         /// <summary>
+        /// Returns companies that are available for quote downloading by checking the RetrieveQuotesFlag.
+        /// </summary>
+        /// <returns>Returns companies that are available for quote downloading.</returns>
+        public IQueryable<T> GetCompaniesForQuoteDownload()
+        {
+            return GetCompanies().Where(c => c.RetrieveQuotesFlag);
+        }
+
+        /// <summary>
         /// Finds and returns the company from the repository with the matching id.
         /// </summary>
         /// <param name="id">The id of the company to return.</param>
@@ -49,6 +60,21 @@ namespace QR.Business.Services
         public T FindCompany(int id)
         {
             return GetCompanies().FirstOrDefault(c => c.Id == id);
+        }
+
+        /// <summary>
+        /// Returns the date of the most recently stored quote for a given <paramref name="company"/>. 
+        /// </summary>
+        /// <returns>The date of the most recently stored quote for a given <paramref name="company"/>; Otherwise, null.</returns>
+        public DateTime? GetMostRecentQuoteDate(T company)
+        {
+            if (company == null)
+                throw new ArgumentNullException("company");
+
+            if (company.Quotes == null)
+                throw new InvalidOperationException("The company's quotes haven't been initialized.");
+
+            return company.Quotes.OrderByDescending(q => q.Date).FirstOrDefault()?.Date;
         }
 
         /// <summary>

@@ -86,6 +86,55 @@ namespace QR.Business.Tests.Services
         }
 
         #endregion
+        #region Testing IQueryable<T> GetCompaniesForQuoteDownload()
+
+        [TestMethod]
+        [ExpectedException(typeof(ObjectDisposedException))]
+        public void GetCompaniesForQuoteDownload_AfterDisposed_ThrowsException()
+        {
+            // Arrange
+            _service.Dispose();
+
+            // Act
+            var companies = _service.GetCompaniesForQuoteDownload();
+        }
+
+        [TestMethod]
+        public void GetCompaniesForQuoteDownload_WithEmptyCompanies_ReturnsEmptyQueryable()
+        {
+            // Act
+            var companies = _service.GetCompaniesForQuoteDownload();
+
+            // Assert
+            Assert.IsNotNull(companies);
+            Assert.IsTrue(companies.Count() == 0);
+        }
+
+        [TestMethod]
+        public void GetCompaniesForQuoteDownload_WithPopulatedCompanies_ReturnsOnlyValidCompanies()
+        {
+            // Arrange
+            var company1 = new TestCompany(111) { RetrieveQuotesFlag = true };
+            var company2 = new TestCompany(222) { RetrieveQuotesFlag = false };
+            var company3 = new TestCompany(333) { RetrieveQuotesFlag = false };
+            var company4 = new TestCompany(444) { RetrieveQuotesFlag = true };
+
+            _repository.Create(company1);
+            _repository.Create(company2);
+            _repository.Create(company3);
+            _repository.Create(company4);
+
+            // Act
+            var companies = _service.GetCompaniesForQuoteDownload();
+
+            // Assert
+            Assert.IsNotNull(companies);
+            Assert.IsTrue(companies.Count() == 2);
+            Assert.IsTrue(companies.Contains(company1));
+            Assert.IsTrue(companies.Contains(company4));
+        }
+
+        #endregion
         #region Testing T FindCompany(int id)
 
         [TestMethod]
@@ -135,6 +184,72 @@ namespace QR.Business.Tests.Services
 
             // Assert
             Assert.IsNull(company);
+        }
+
+        #endregion
+        #region Testing DateTime? GetMostRecentQuoteDate(T company)
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void GetMostRecentQuoteDate_WithNullCompany_ThrowsException()
+        {
+            // Act
+            _service.GetMostRecentQuoteDate(null);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void GetMostRecentQuoteDate_WithNullQuotes_ThrowsException()
+        {
+            // Arrange
+            var company = new TestCompany()
+            {
+                Id = 123,
+                Quotes = null
+            };
+
+            // Act
+            var quoteDate = _service.GetMostRecentQuoteDate(company);
+        }
+
+        [TestMethod]
+        public void GetMostRecentQuoteDate_WithEmptyQuotes_ReturnsNull()
+        {
+            // Arrange
+            var company = new TestCompany()
+            {
+                Id = 123
+            };
+
+            // Act
+            var quoteDate = _service.GetMostRecentQuoteDate(company);
+
+            // Assert
+            Assert.IsNull(quoteDate);
+        }
+
+        [TestMethod]
+        public void GetMostRecentQuoteDate_WithValidQuotes_ReturnsMostRecentQuoteDate()
+        {
+            // Arrange
+            var firstQuote = new TestQuote() { Date = new DateTime(2010, 1, 1) };
+            var secondQuote = new TestQuote() { Date = new DateTime(2010, 1, 2) };
+            var thirdQuote = new TestQuote() { Date = new DateTime(2009, 1, 2) };
+
+            var company = new TestCompany()
+            {
+                Id = 123
+            };
+
+            company.Quotes.Add(firstQuote);
+            company.Quotes.Add(secondQuote);
+            company.Quotes.Add(thirdQuote);
+
+            // Act
+            var quoteDate = _service.GetMostRecentQuoteDate(company);
+
+            // Assert
+            Assert.IsTrue(quoteDate == secondQuote.Date);
         }
 
         #endregion
