@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{41F35AF5-9767-467D-A9A7-3E4654386640}</ProjectGuid>
+    <ProjectGuid>{B06E0CE7-BA2B-455F-8F75-4931C6CBBCC2}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>QR</RootNamespace>
-    <AssemblyName>QR</AssemblyName>
+    <RootNamespace>QR.App</RootNamespace>
+    <AssemblyName>QR.App</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -34,10 +34,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -63,16 +63,13 @@
       <Name>Framework.Generic</Name>
     </ProjectReference>
     <ProjectReference Include="..\QR.Business\QR.Business.csproj">
-      <Project>{A7D2E0F0-4461-4C34-A99E-13825ACDD5D4}</Project>
+      <Project>{a7d2e0f0-4461-4c34-a99e-13825acdd5d4}</Project>
       <Name>QR.Business</Name>
     </ProjectReference>
     <ProjectReference Include="..\QR.DataModel\QR.DataModel.csproj">
-      <Project>{82AF793B-5A7D-458F-A55F-DD96F5CC277D}</Project>
+      <Project>{82af793b-5a7d-458f-a55f-dd96f5cc277d}</Project>
       <Name>QR.DataModel</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Models\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\tools\Build-Cleanup-Targets.targets" />
