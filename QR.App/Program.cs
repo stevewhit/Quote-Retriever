@@ -14,7 +14,7 @@ namespace QR.App
 
         public static void Main(string[] args)
         {
-
+            
         }
     }
 }
