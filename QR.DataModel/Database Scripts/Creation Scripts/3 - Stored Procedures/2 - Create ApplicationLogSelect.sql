@@ -19,7 +19,7 @@ SELECT [Id]
 	,[Exception]
 	,[Location]
 	,[UserId]
-FROM [dbo].[ApplicationLog] logEntry
+FROM [dbo].[ApplicationLogs] logEntry
 ORDER BY logEntry.Date DESC
 GO
 

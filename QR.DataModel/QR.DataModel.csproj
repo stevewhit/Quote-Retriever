@@ -83,6 +83,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <Content Include="connections.config" />
     <None Include="Database Scripts\Build-Database.bat" />
     <EntityDeploy Include="SMAContext.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
@@ -98,12 +99,14 @@
     <Content Include="Database Scripts\Creation Scripts\0DEV - Create Development Database.sql" />
     <Content Include="Database Scripts\Creation Scripts\1 - Security\0 - Create Login User StockMarketDataAdmin.sql" />
     <Content Include="Database Scripts\Creation Scripts\1 - Security\1 - Create Database User StockMarketDataAdmin.sql" />
-    <Content Include="Database Scripts\Creation Scripts\2 - Tables\1 - Create ApplicationLog Table.sql" />
-    <Content Include="Database Scripts\Creation Scripts\2 - Tables\2 - Create Company Table.sql" />
-    <Content Include="Database Scripts\Creation Scripts\2 - Tables\3 - Create Quote Table.sql" />
+    <Content Include="Database Scripts\Creation Scripts\2 - Tables\1 - Create ApplicationLogs Table.sql" />
+    <Content Include="Database Scripts\Creation Scripts\2 - Tables\2 - Create Companys Table.sql" />
+    <Content Include="Database Scripts\Creation Scripts\2 - Tables\3 - Create Quotes Table.sql" />
+    <Content Include="Database Scripts\Creation Scripts\2 - Tables\3a - Create Quotes Trigger OnInsertOrUpdate.sql" />
     <Content Include="Database Scripts\Creation Scripts\3 - Stored Procedures\1 - Create ApplicationLogInsert.sql" />
     <Content Include="Database Scripts\Creation Scripts\3 - Stored Procedures\2 - Create ApplicationLogSelect.sql" />
     <Content Include="Database Scripts\Creation Scripts\4 - Data Population\1 - Populate Company Table.sql" />
+    <Content Include="Database Scripts\Creation Scripts\4 - Data Population\2 - Populate Quotes Table.sql" />
     <Content Include="SMAContext.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>SMAContext.edmx</DependentUpon>

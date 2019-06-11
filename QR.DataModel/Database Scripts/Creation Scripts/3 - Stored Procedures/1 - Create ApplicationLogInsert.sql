@@ -18,7 +18,7 @@ CREATE proc [dbo].[ApplicationLogInsert]
 	,@userId nvarchar(255)
 AS
   
-INSERT INTO [dbo].[ApplicationLog] ([Date],[Thread],[Level],[Logger],[Message],[Exception], [Location], [UserId] ) 
+INSERT INTO [dbo].[ApplicationLogs] ([Date],[Thread],[Level],[Logger],[Message],[Exception], [Location], [UserId] ) 
 VALUES (@logDate, @thread, @logLevel, @logger, @message, @exception, @location, @userId)
 GO
 
