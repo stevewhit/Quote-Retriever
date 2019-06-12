@@ -1,5 +1,5 @@
 ﻿using Framework.Generic.Tests.Builders;
-using QR.DataModel;
+using StockMarket.DataModel;
 using System;
 using System.Data.Entity;
 using System.Diagnostics.CodeAnalysis;

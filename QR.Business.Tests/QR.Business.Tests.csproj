@@ -97,13 +97,13 @@
       <Project>{90236ce3-7b97-457a-8bc2-9acaed973488}</Project>
       <Name>Framework.Generic</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\StockMarket.Generic\StockMarket.DataModel\StockMarket.DataModel.csproj">
+      <Project>{6ec15fb7-894b-475c-ba2a-fb556d9d9832}</Project>
+      <Name>StockMarket.DataModel</Name>
+    </ProjectReference>
     <ProjectReference Include="..\QR.Business\QR.Business.csproj">
       <Project>{a7d2e0f0-4461-4c34-a99e-13825acdd5d4}</Project>
       <Name>QR.Business</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\QR.DataModel\QR.DataModel.csproj">
-      <Project>{82af793b-5a7d-458f-a55f-dd96f5cc277d}</Project>
-      <Name>QR.DataModel</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />

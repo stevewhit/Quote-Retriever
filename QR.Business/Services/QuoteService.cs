@@ -1,7 +1,7 @@
 ﻿using Framework.Generic.EntityFramework;
 using System;
 using System.Data.Entity;
-using QR.DataModel;
+using StockMarket.DataModel;
 using System.Linq;
 using System.Collections.Generic;
 
