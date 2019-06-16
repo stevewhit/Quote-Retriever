@@ -1,9 +1,12 @@
 ﻿using Framework.Generic.EntityFramework;
 using log4net;
 using QR.Business.Services;
+using StockMarket.Generic.Downloaders;
 using StockMarket.DataModel;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
+using StockMarket.Generic.Downloaders.IEXCloud;
 
 namespace QR.App
 {
@@ -14,12 +17,16 @@ namespace QR.App
 
         public static void Main(string[] args)
         {
+            var blah = ConfigurationManager.AppSettings["IEXCloudToken"];
+            var downloader2 = new Downloader(blah);
+
+
             var efContext = new EfContext(new SMAContext());
 
             ICompanyService<Company> companyService = new CompanyService<Company>(new EfRepository<Company>(efContext));
             IQuoteService<Quote> quoteService = new QuoteService<Quote>(new EfRepository<Quote>(efContext));
 
-            //IQuoteDownloader downloader = new InsertQuoteAPIDownloaderTypeHere();
+            IQuoteDownloader<Quote> downloader = null;
 
             try
             {
@@ -29,20 +36,14 @@ namespace QR.App
                 {
                     // possibly fire up multiple tasks to download all data. This will require async updating of database..
                     // Might be possible by NOT saving changes to db 
-
-
                     
-
-
                     // Get the latest quote date that has been stored for this company; otherwise a default value
                     var lastStoredQuoteDate = companyService.GetMostRecentQuoteDate(company) ?? DEFAULT_START_DATE;
 
-                    //IEnumerable<Quote> downloadedQuotes = downloader.GetQuotes(company.Symbol, lastStoredQuoteDate.AddDays(1));
-
-                    // Some type of conversion needs to take place here to convert from DownloadedQuote to Quote..
+                    var downloadedQuotes = downloader.DownloadQuotes(company.Symbol, lastStoredQuoteDate.AddDays(1));
 
                     // Add all quotes to database
-                    //quoteService.Add(downloadedQuotes);
+                    quoteService.Add(downloadedQuotes);
                 }
             }
             catch

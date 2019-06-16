@@ -1,5 +1,5 @@
 # Hidden Files
-*connections.config
+secret*.config
 *0 - Create Login User StockMarketDataAdmin.sql
 
 ## Ignore Visual Studio temporary files, build results, and

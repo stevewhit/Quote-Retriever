@@ -75,13 +75,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <Content Include="connections.config">
+    <Content Include="secretConnectionStrings.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="log4net.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
+    <Content Include="secretAppSettings.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Framework.Generic\Framework.Generic\Framework.Generic.csproj">
@@ -91,6 +94,10 @@
     <ProjectReference Include="..\..\StockMarket.Generic\StockMarket.DataModel\StockMarket.DataModel.csproj">
       <Project>{6ec15fb7-894b-475c-ba2a-fb556d9d9832}</Project>
       <Name>StockMarket.DataModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\StockMarket.Generic\StockMarket.Generic\StockMarket.Generic.csproj">
+      <Project>{6bf1d85b-51f7-471e-8ee3-438e76d832b6}</Project>
+      <Name>StockMarket.Generic</Name>
     </ProjectReference>
     <ProjectReference Include="..\QR.Business\QR.Business.csproj">
       <Project>{a7d2e0f0-4461-4c34-a99e-13825acdd5d4}</Project>
