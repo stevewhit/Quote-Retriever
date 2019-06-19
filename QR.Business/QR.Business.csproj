@@ -52,6 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\MarketService.cs" />
     <Compile Include="Services\CompanyService.cs" />
     <Compile Include="Services\QuoteService.cs" />
   </ItemGroup>
@@ -63,6 +64,10 @@
     <ProjectReference Include="..\..\StockMarket.Generic\StockMarket.DataModel\StockMarket.DataModel.csproj">
       <Project>{6ec15fb7-894b-475c-ba2a-fb556d9d9832}</Project>
       <Name>StockMarket.DataModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\StockMarket.Generic\StockMarket.Generic\StockMarket.Generic.csproj">
+      <Project>{6BF1D85B-51F7-471E-8EE3-438E76D832B6}</Project>
+      <Name>StockMarket.Generic</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

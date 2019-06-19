@@ -25,12 +25,11 @@ namespace QR.Business.Services
 
         public QuoteService(IEfRepository<T> repository)
         {
-            if (repository == null)
-                throw new ArgumentNullException("repository");
-
-            _repository = repository;
+            _repository = repository ?? throw new ArgumentNullException("repository");
         }
-                
+
+        #region IQuoteService<T>
+
         /// <summary>
         /// Returns quotes stored in the repository.
         /// </summary>
@@ -38,7 +37,7 @@ namespace QR.Business.Services
         public IDbSet<T> GetQuotes()
         {
             if (_isDisposed)
-                throw new ObjectDisposedException("Repository", "The repository has been disposed.");
+                throw new ObjectDisposedException("QuoteService", "The service has been disposed.");
 
             return _repository.GetEntities();
         }
@@ -60,7 +59,7 @@ namespace QR.Business.Services
         public void Add(T quote)
         {
             if (_isDisposed)
-                throw new ObjectDisposedException("Repository", "The repository has been disposed.");
+                throw new ObjectDisposedException("QuoteService", "The service has been disposed.");
 
             if (quote == null)
                 throw new ArgumentNullException("quote");
@@ -76,7 +75,7 @@ namespace QR.Business.Services
         public void Add(IEnumerable<T> quotes)
         {
             if (_isDisposed)
-                throw new ObjectDisposedException("Repository", "The repository has been disposed.");
+                throw new ObjectDisposedException("QuoteService", "The service has been disposed.");
 
             if (quotes == null)
                 throw new ArgumentNullException("quotes");
@@ -99,7 +98,7 @@ namespace QR.Business.Services
         public void Update(T quote)
         {
             if (_isDisposed)
-                throw new ObjectDisposedException("Repository", "The repository has been disposed.");
+                throw new ObjectDisposedException("QuoteService", "The service has been disposed.");
 
             if (quote == null)
                 throw new ArgumentNullException("quote");
@@ -129,7 +128,7 @@ namespace QR.Business.Services
         public void Delete(T quote)
         {
             if (_isDisposed)
-                throw new ObjectDisposedException("Repository", "The repository has been disposed.");
+                throw new ObjectDisposedException("QuoteService", "The service has been disposed.");
 
             if (quote == null)
                 throw new ArgumentNullException("quote");
@@ -137,7 +136,10 @@ namespace QR.Business.Services
             _repository.Delete(quote);
             _repository.SaveChanges();
         }
-        
+
+        #endregion
+        #region IDisposable
+
         /// <summary>
         /// Disposes this object and properly cleans up resources. 
         /// </summary>
@@ -163,5 +165,7 @@ namespace QR.Business.Services
             Dispose(true);
             GC.SuppressFinalize(this);
         }
+
+        #endregion
     }
 }

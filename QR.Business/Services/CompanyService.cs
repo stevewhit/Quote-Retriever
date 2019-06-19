@@ -8,13 +8,41 @@ namespace QR.Business.Services
 {
     public interface ICompanyService<T> : IDisposable where T : Company
     {
+        /// <summary>
+        /// Returns stored companies.
+        /// </summary>
+        /// <returns>Returns companies stored in the repository.</returns>
         IDbSet<T> GetCompanies();
-        IQueryable<T> GetCompaniesForQuoteDownload();
+
+        /// <summary>
+        /// Finds and returns the company with the matching id.
+        /// </summary>
+        /// <param name="id">The id of the company to return.</param>
+        /// <returns>Returns the company with the matching id.</returns>
         T FindCompany(int id);
-        DateTime? GetMostRecentQuoteDate(T company);
+
+        /// <summary>
+        /// Adds the supplied <paramref name="company"/>.
+        /// </summary>
+        /// <param name="company">The company that is to be added.</param>
         void Add(T company);
+
+        /// <summary>
+        /// Updates the supplied <paramref name="company"/>.
+        /// </summary>
+        /// <param name="company">The company that is to be updated.</param>
         void Update(T company);
+
+        /// <summary>
+        /// Finds and deletes an existing company by <paramref name="id"/>.
+        /// </summary>
+        /// <param name="id">The id of company to be deleted.</param>
         void Delete(int id);
+
+        /// <summary>
+        /// Deletes the supplied <paramref name="company"/>.
+        /// </summary>
+        /// <param name="company">The company that is to be deleted.</param>
         void Delete(T company);
     }
 
@@ -25,35 +53,25 @@ namespace QR.Business.Services
 
         public CompanyService(IEfRepository<T> repository)
         {
-            if (repository == null)
-                throw new ArgumentNullException("repository");
-
-            _repository = repository;
+            _repository = repository ?? throw new ArgumentNullException("repository");
         }
 
+        #region ICompanyService<C>
+
         /// <summary>
-        /// Returns companies stored in the repository.
+        /// Returns stored companies.
         /// </summary>
         /// <returns>Returns companies stored in the repository.</returns>
         public IDbSet<T> GetCompanies()
         {
             if (_isDisposed)
-                throw new ObjectDisposedException("Repository", "The repository has been disposed.");
+                throw new ObjectDisposedException("CompanyService", "The service has been disposed.");
 
             return _repository.GetEntities();
         }
 
         /// <summary>
-        /// Returns companies that are available for quote downloading by checking the RetrieveQuotesFlag.
-        /// </summary>
-        /// <returns>Returns companies that are available for quote downloading.</returns>
-        public IQueryable<T> GetCompaniesForQuoteDownload()
-        {
-            return GetCompanies().Where(c => c.RetrieveQuotesFlag);
-        }
-
-        /// <summary>
-        /// Finds and returns the company from the repository with the matching id.
+        /// Finds and returns the company with the matching id.
         /// </summary>
         /// <param name="id">The id of the company to return.</param>
         /// <returns>Returns the company with the matching id.</returns>
@@ -63,28 +81,13 @@ namespace QR.Business.Services
         }
 
         /// <summary>
-        /// Returns the date of the most recently stored quote for a given <paramref name="company"/>. 
-        /// </summary>
-        /// <returns>The date of the most recently stored quote for a given <paramref name="company"/>; Otherwise, null.</returns>
-        public DateTime? GetMostRecentQuoteDate(T company)
-        {
-            if (company == null)
-                throw new ArgumentNullException("company");
-
-            if (company.Quotes == null)
-                throw new InvalidOperationException("The company's quotes haven't been initialized.");
-
-            return company.Quotes.OrderByDescending(q => q.Date).FirstOrDefault()?.Date;
-        }
-
-        /// <summary>
-        /// Adds the supplied <paramref name="company"/> to the repository.
+        /// Adds the supplied <paramref name="company"/>.
         /// </summary>
         /// <param name="company">The company that is to be added.</param>
         public void Add(T company)
         {
             if (_isDisposed)
-                throw new ObjectDisposedException("Repository", "The repository has been disposed.");
+                throw new ObjectDisposedException("CompanyService", "The service has been disposed.");
 
             if (company == null)
                 throw new ArgumentNullException("company");
@@ -94,13 +97,13 @@ namespace QR.Business.Services
         }
 
         /// <summary>
-        /// Updates the supplied <paramref name="company"/> in the repository.
+        /// Updates the supplied <paramref name="company"/>.
         /// </summary>
         /// <param name="company">The company that is to be updated.</param>
         public void Update(T company)
         {
             if (_isDisposed)
-                throw new ObjectDisposedException("Repository", "The repository has been disposed.");
+                throw new ObjectDisposedException("CompanyService", "The service has been disposed.");
 
             if (company == null)
                 throw new ArgumentNullException("company");
@@ -110,7 +113,7 @@ namespace QR.Business.Services
         }
 
         /// <summary>
-        /// Finds and deletes an existing company in the repository by using its <paramref name="id"/>.
+        /// Finds and deletes an existing company by <paramref name="id"/>.
         /// </summary>
         /// <param name="id">The id of company to be deleted.</param>
         public void Delete(int id)
@@ -124,13 +127,13 @@ namespace QR.Business.Services
         }
 
         /// <summary>
-        /// Deletes the supplied <paramref name="company"/> from the repository.
+        /// Deletes the supplied <paramref name="company"/>.
         /// </summary>
         /// <param name="company">The company that is to be deleted.</param>
         public void Delete(T company)
         {
             if (_isDisposed)
-                throw new ObjectDisposedException("Repository", "The repository has been disposed.");
+                throw new ObjectDisposedException("CompanyService", "The service has been disposed.");
 
             if (company == null)
                 throw new ArgumentNullException("company");
@@ -139,6 +142,8 @@ namespace QR.Business.Services
             _repository.SaveChanges();
         }
 
+        #endregion
+        #region IDisposable
         /// <summary>
         /// Disposes this object and properly cleans up resources. 
         /// </summary>
@@ -164,5 +169,6 @@ namespace QR.Business.Services
             Dispose(true);
             GC.SuppressFinalize(this);
         }
+        #endregion
     }
 }
