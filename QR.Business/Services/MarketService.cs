@@ -31,9 +31,9 @@ namespace QR.Business.Services
     {
         private const int MAX_MONTHS_TO_DOWNLOAD = 24;
 
-        private ICompanyService<C> _companyService;
-        private IQuoteService<Q> _quoteService;
-        private IMarketDownloader<C, Q> _downloader;
+        private readonly ICompanyService<C> _companyService;
+        private readonly IQuoteService<Q> _quoteService;
+        private readonly IMarketDownloader<C, Q> _downloader;
 
         private bool _isDisposed = false;
 
@@ -134,13 +134,8 @@ namespace QR.Business.Services
                 if (disposing)
                 {
                     _companyService.Dispose();
-                    _companyService = null;
-
                     _quoteService.Dispose();
-                    _quoteService = null;
-
                     _downloader.Dispose();
-                    _downloader = null;
                 }
 
                 _isDisposed = true;

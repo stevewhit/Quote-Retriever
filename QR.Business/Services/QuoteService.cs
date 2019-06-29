@@ -20,7 +20,7 @@ namespace QR.Business.Services
 
     public class QuoteService<T> : IQuoteService<T> where T : Quote
     {
-        private IEfRepository<T> _repository;
+        private readonly IEfRepository<T> _repository;
         private bool _isDisposed = false;
 
         public QuoteService(IEfRepository<T> repository)
@@ -150,7 +150,6 @@ namespace QR.Business.Services
                 if (disposing)
                 {
                     _repository.Dispose();
-                    _repository = null;
                 }
 
                 _isDisposed = true;
