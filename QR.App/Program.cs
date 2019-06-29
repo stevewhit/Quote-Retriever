@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using System.Configuration;
 using StockMarket.Generic.Downloaders.IEXCloud;
 using StockMarket.Generic.Downloaders.IEXCloud.JSON_Objects;
+using Ninject;
+using System.Reflection;
 
 namespace QR.App
 {
@@ -18,15 +20,24 @@ namespace QR.App
 
         public static void Main(string[] args)
         {
-            var token = ConfigurationManager.AppSettings["IEXCloudTokenTest"];
-            //var token = ConfigurationManager.AppSettings["IEXCloudToken"];
-            IMarketDownloader<Company, Quote> marketDownloader = new EXCloudWrapper(token);
+            IKernel kernel = new StandardKernel();
+            kernel.Load(Assembly.GetExecutingAssembly());
+            
+            var companyService = kernel.Get<ICompanyService<Company>>();
+            var quoteService = kernel.Get<IQuoteService<Quote>>();
+            var marketService = kernel.Get<IMarketService<Company, Quote>>();
 
-            IEfContext efContext = new EfContext(new SMAContext());
 
-            ICompanyService<Company> companyService = new CompanyService<Company>(new EfRepository<Company>(efContext));
-            IQuoteService<Quote> quoteService = new QuoteService<Quote>(new EfRepository<Quote>(efContext));
-            IMarketService<Company, Quote> marketService= new MarketService<Company, Quote>(companyService, quoteService, marketDownloader);
+
+
+            ////var token = ConfigurationManager.AppSettings["IEXCloudToken"];
+            //IMarketDownloader<Company, Quote> marketDownloader = new EXCloudWrapper(token);
+
+            //IEfContext efContext = new EfContext(new SMAContext());
+
+            //ICompanyService<Company> companyService = new CompanyService<Company>(new EfRepository<Company>(efContext));
+            //IQuoteService<Quote> quoteService = new QuoteService<Quote>(new EfRepository<Quote>(efContext));
+            //IMarketService<Company, Quote> marketService= new MarketService<Company, Quote>(companyService, quoteService, marketDownloader);
 
             var company = marketService.DownloadCompany("AAPL");
             if (companyService.FindCompany(company.Id) == null)
