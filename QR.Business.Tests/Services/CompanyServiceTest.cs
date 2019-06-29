@@ -2,10 +2,10 @@
 using Framework.Generic.Tests.Builders;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QR.Business.Services;
-using QR.Business.Tests.Builders;
 using System.Diagnostics.CodeAnalysis;
 using System;
 using System.Linq;
+using StockMarket.DataModel.Test.Builders;
 
 namespace QR.Business.Tests.Services
 {
@@ -68,6 +68,17 @@ namespace QR.Business.Tests.Services
 
             // Act
             var companies = _service.GetCompanies();
+        }
+
+        [TestMethod]
+        public void GetCompanies_WithEmptyRepository_ReturnsEmptyEnumerable()
+        {
+            // Act
+            var companies = _service.GetCompanies();
+
+            // Assert
+            Assert.IsNotNull(companies);
+            Assert.IsFalse(companies.Any());
         }
 
         [TestMethod]

@@ -19,6 +19,7 @@ namespace QR.App
         public static void Main(string[] args)
         {
             var token = ConfigurationManager.AppSettings["IEXCloudTokenTest"];
+            //var token = ConfigurationManager.AppSettings["IEXCloudToken"];
             IMarketDownloader<Company, Quote> marketDownloader = new EXCloudWrapper(token);
 
             IEfContext efContext = new EfContext(new SMAContext());
@@ -26,6 +27,12 @@ namespace QR.App
             ICompanyService<Company> companyService = new CompanyService<Company>(new EfRepository<Company>(efContext));
             IQuoteService<Quote> quoteService = new QuoteService<Quote>(new EfRepository<Quote>(efContext));
             IMarketService<Company, Quote> marketService= new MarketService<Company, Quote>(companyService, quoteService, marketDownloader);
+
+            var company = marketService.DownloadCompany("AAPL");
+            if (companyService.FindCompany(company.Id) == null)
+                companyService.Add(company);
+
+            //marketService.UpdateCompanyWithLatestQuotes(company.Id);
 
             try
             {

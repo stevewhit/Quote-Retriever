@@ -1,10 +1,7 @@
-﻿using Framework.Generic.EntityFramework;
-using System;
-using System.Data.Entity;
+﻿using System;
 using StockMarket.DataModel;
 using System.Linq;
 using StockMarket.Generic.Downloaders;
-using System.Collections.Generic;
 
 namespace QR.Business.Services
 {
@@ -102,22 +99,26 @@ namespace QR.Business.Services
             // If quotes are stored for this company, return the last date a quote was stored for; 
             // otherwise return today's date - MAX_MONTHS_TO_DOWNLOAD
             var lastStoredQuoteDate = company.Quotes.Any() ?
-                        company.Quotes.Max(q => q.Date).Date : DateTime.Now.AddMonths(-1 * MAX_MONTHS_TO_DOWNLOAD).Date;
+                        company.Quotes.Max(q => q.Date).Date : DateTime.Now.AddMonths(-1 * MAX_MONTHS_TO_DOWNLOAD).AddDays(-1).Date;
             var todaysDate = DateTime.Now.Date;
 
             // Download quotes in chuncks based off the date difference between the last stored quote date and today's date.
-            var downloadedQuotes = lastStoredQuoteDate.AddYears(5) < todaysDate ? _downloader.DownloadQuotesFiveYears(company.Symbol) :
-                                   lastStoredQuoteDate.AddYears(2) < todaysDate ? _downloader.DownloadQuotesTwoYears(company.Symbol) :
-                                   lastStoredQuoteDate.AddYears(1) < todaysDate ? _downloader.DownloadQuotesOneYear(company.Symbol) :
-                                   lastStoredQuoteDate.AddMonths(5) < todaysDate ? _downloader.DownloadQuotesFiveMonths(company.Symbol) :
-                                   lastStoredQuoteDate.AddMonths(3) < todaysDate ? _downloader.DownloadQuotesThreeMonths(company.Symbol) :
-                                   lastStoredQuoteDate.AddMonths(1) < todaysDate ? _downloader.DownloadQuotesOneMonth(company.Symbol) :
-                                   lastStoredQuoteDate.AddDays(5) < todaysDate ? _downloader.DownloadQuotesFiveDays(company.Symbol) :
-                                   lastStoredQuoteDate.AddDays(1) < todaysDate ? new List<Q> { _downloader.DownloadPreviousDayQuote(company.Symbol) } :
-                                   new List<Q>();
+            var downloadedQuotes = lastStoredQuoteDate.AddDays(1) >= todaysDate ? new[] { _downloader.DownloadPreviousDayQuote(company.Symbol) } :
+                                   lastStoredQuoteDate.AddDays(5) >= todaysDate ? _downloader.DownloadQuotesFiveDays(company.Symbol) :
+                                   lastStoredQuoteDate.AddMonths(1) >= todaysDate ? _downloader.DownloadQuotesOneMonth(company.Symbol) :
+                                   lastStoredQuoteDate.AddMonths(3) >= todaysDate ? _downloader.DownloadQuotesThreeMonths(company.Symbol) :
+                                   lastStoredQuoteDate.AddMonths(5) >= todaysDate ? _downloader.DownloadQuotesFiveMonths(company.Symbol) :
+                                   lastStoredQuoteDate.AddYears(1) >= todaysDate ? _downloader.DownloadQuotesOneYear(company.Symbol) :
+                                   lastStoredQuoteDate.AddYears(2) >= todaysDate ? _downloader.DownloadQuotesTwoYears(company.Symbol) :
+                                   _downloader.DownloadQuotesTwoYears(company.Symbol);
 
-            // Add only the downloaded quotes where the date is greater than the last stored quote date for this company.
-            _quoteService.Add(downloadedQuotes.Where(q => q.Date > lastStoredQuoteDate).OrderBy(q => q.Date));
+            // Remove any duplicate dates
+            var quotes = downloadedQuotes.Where(q => q.Date > lastStoredQuoteDate && !company.Quotes.Any(cq => cq.Date == q.Date)).OrderBy(q => q.Date).ToList();
+
+            // Store company for each quote.
+            quotes.ForEach(q => { q.Company = company; q.CompanyId = company.Id; });
+
+            _quoteService.Add(quotes);
         }
 
         #endregion
@@ -132,13 +133,8 @@ namespace QR.Business.Services
             {
                 if (disposing)
                 {
-                    _companyService.Dispose();
                     _companyService = null;
-
-                    _quoteService.Dispose();
                     _quoteService = null;
-
-                    _downloader.Dispose();
                     _downloader = null;
                 }
 

@@ -2,7 +2,7 @@
 using Framework.Generic.Tests.Builders;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QR.Business.Services;
-using QR.Business.Tests.Builders;
+using StockMarket.DataModel.Test.Builders;
 using System.Diagnostics.CodeAnalysis;
 using System;
 using System.Linq;

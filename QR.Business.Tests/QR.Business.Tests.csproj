@@ -59,9 +59,8 @@
       <HintPath>..\packages\MSTest.TestFramework.1.4.0\lib\net45\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Moq, Version=4.11.0.0, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
-      <HintPath>..\packages\Moq.4.11.0\lib\net45\Moq.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Moq, Version=4.12.0.0, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
+      <HintPath>..\packages\Moq.4.12.0\lib\net45\Moq.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -77,10 +76,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Builders\TestCompany.cs" />
-    <Compile Include="Builders\TestQuote.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\CompanyServiceTest.cs" />
+    <Compile Include="Services\MarketServiceTest.cs" />
     <Compile Include="Services\QuoteServiceTest.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -97,9 +95,21 @@
       <Project>{90236ce3-7b97-457a-8bc2-9acaed973488}</Project>
       <Name>Framework.Generic</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\StockMarket.Generic\StockMarket.DataModel.Test\StockMarket.DataModel.Test.csproj">
+      <Project>{30505d26-76e1-4b68-b762-71b6a7b263d3}</Project>
+      <Name>StockMarket.DataModel.Test</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\StockMarket.Generic\StockMarket.DataModel\StockMarket.DataModel.csproj">
       <Project>{6ec15fb7-894b-475c-ba2a-fb556d9d9832}</Project>
       <Name>StockMarket.DataModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\StockMarket.Generic\StockMarket.Generic.Test\StockMarket.Generic.Test.csproj">
+      <Project>{e354f263-e06f-4c1f-b427-1b83662e85eb}</Project>
+      <Name>StockMarket.Generic.Test</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\StockMarket.Generic\StockMarket.Generic\StockMarket.Generic.csproj">
+      <Project>{6BF1D85B-51F7-471E-8EE3-438E76D832B6}</Project>
+      <Name>StockMarket.Generic</Name>
     </ProjectReference>
     <ProjectReference Include="..\QR.Business\QR.Business.csproj">
       <Project>{a7d2e0f0-4461-4c34-a99e-13825acdd5d4}</Project>
