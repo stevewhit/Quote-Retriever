@@ -133,8 +133,13 @@ namespace QR.Business.Services
             {
                 if (disposing)
                 {
+                    _companyService.Dispose();
                     _companyService = null;
+
+                    _quoteService.Dispose();
                     _quoteService = null;
+
+                    _downloader.Dispose();
                     _downloader = null;
                 }
 
