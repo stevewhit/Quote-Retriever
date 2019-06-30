@@ -73,7 +73,7 @@ namespace QR.Business.Tests.Services
         {
             // Arrange
             var quoteToAdd = new TestQuote(999);
-            _repository.Create(quoteToAdd);
+            _repository.Add(quoteToAdd);
             
             // Act
             var quotes = _service.GetQuotes();
@@ -107,7 +107,7 @@ namespace QR.Business.Tests.Services
                 Id = id
             };
             
-            _repository.Create(quoteToAdd);
+            _repository.Add(quoteToAdd);
 
             // Act
             var quote = _service.FindQuote(id);
@@ -126,7 +126,7 @@ namespace QR.Business.Tests.Services
                 Id = 123
             };
 
-            _repository.Create(quoteToAdd);
+            _repository.Add(quoteToAdd);
 
             // Act
             var quote = _service.FindQuote(234);
@@ -181,11 +181,11 @@ namespace QR.Business.Tests.Services
         }
 
         #endregion
-        #region Testing void Add(IEnumerable<T> quotes)
+        #region Testing void AddRange(IEnumerable<T> quotes)
 
         [TestMethod]
         [ExpectedException(typeof(ObjectDisposedException))]
-        public void Add_Quotes_AfterDisposed_ThrowsException()
+        public void AddRange_Quotes_AfterDisposed_ThrowsException()
         {
             // Arrange
             var quotesToAdd = new List<TestQuote>
@@ -196,38 +196,19 @@ namespace QR.Business.Tests.Services
             _service.Dispose();
 
             // Act
-            _service.Add(quotesToAdd);
+            _service.AddRange(quotesToAdd);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void Add_Quotes_WithNullQuotes_ThrowsException()
+        public void AddRange_Quotes_WithNullQuotes_ThrowsException()
         {
             // Act
-            _service.Add(quotes:null);
+            _service.AddRange(quotes:null);
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void Add_Quotes_ContainingNullQuote_ThrowsException()
-        {
-            // Arrange
-            var quote1 = new TestQuote();
-            var quote2 = new TestQuote();
-            var quote3 = new TestQuote();
-            TestQuote quote4 = null;
-
-            var quotesToAdd = new List<TestQuote>
-            {
-                quote1, quote2, quote3, quote4
-            };
-
-            // Act
-            _service.Add(quotesToAdd);
-        }
-
-        [TestMethod]
-        public void Add_Quotes_ContainingValidQuotes_AddsQuotes()
+        public void AddRange_Quotes_ContainingValidQuotes_AddsQuotes()
         {
             // Arrange
             var quote1 = new TestQuote() { Id = 111 };
@@ -241,7 +222,7 @@ namespace QR.Business.Tests.Services
             };
 
             // Act
-            _service.Add(quotesToAdd);
+            _service.AddRange(quotesToAdd);
 
             var addedQuote1 = _service.FindQuote(quote1.Id);
             var addedQuote2 = _service.FindQuote(quote2.Id);

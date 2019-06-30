@@ -15,6 +15,12 @@ namespace QR.Business.Services
         C DownloadCompany(string tickerSymbol);
 
         /// <summary>
+        /// Updates the company details for all companies that are marked to be updated by downloading all relevant company information
+        /// and updating the existing entity object.
+        /// </summary>
+        void UpdateAllCompanyDetails();
+
+        /// <summary>
         /// Downloads and stores quotes for a given company, up to a max range. 
         /// NOTE: Does not override existing quotes.
         /// </summary>
@@ -63,6 +69,47 @@ namespace QR.Business.Services
         }
 
         /// <summary>
+        /// Updates the company details for all companies that are marked to be updated by downloading all relevant company information
+        /// and updating the existing entity object.
+        /// </summary>
+        public void UpdateAllCompanyDetails()
+        {
+            if (_isDisposed)
+                throw new ObjectDisposedException("MarketService", "The service has been disposed.");
+            
+            foreach (var company in _companyService.GetCompanies().Where(c => c.DownloadDetailsFlag).ToList())
+            {
+                var downloadedCompany = DownloadCompany(company.Symbol);
+
+                CopyDownloadedCompanyDetails(company, downloadedCompany);
+
+                company.DownloadDetailsFlag = false;
+
+                _companyService.Update(company);
+            }
+        }
+
+        /// <summary>
+        /// Copies all relevant company properties from a downloaded company to an existing company.
+        /// </summary>
+        /// <param name="toCompany">The company that the downloaded details will be copied to.</param>
+        /// <param name="fromCompany">The downloaded company.</param>
+        private void CopyDownloadedCompanyDetails(C toCompany, C fromCompany)
+        {
+            toCompany.CompanyName = fromCompany.CompanyName;
+            toCompany.Exchange = fromCompany.Exchange;
+            toCompany.Industry = fromCompany.Industry;
+            toCompany.Website = fromCompany.Website;
+            toCompany.Description = fromCompany.Description;
+            toCompany.CEO = fromCompany.CEO;
+            toCompany.SecurityName = fromCompany.SecurityName;
+            toCompany.IssueType = fromCompany.IssueType;
+            toCompany.Sector = fromCompany.Sector;
+            toCompany.NumEmployees = fromCompany.NumEmployees;
+            toCompany.Tags = fromCompany.Tags;
+        }
+
+        /// <summary>
         /// Downloads and stores quotes for a given company, up to a max range. 
         /// NOTE: Does not override existing quotes.
         /// </summary>
@@ -85,7 +132,7 @@ namespace QR.Business.Services
             if (_isDisposed)
                 throw new ObjectDisposedException("MarketService", "The service has been disposed.");
 
-            foreach (var company in _companyService.GetCompanies().Where(c => c.RetrieveQuotesFlag))
+            foreach (var company in _companyService.GetCompanies().Where(c => c.RetrieveQuotesFlag).ToList())
                 UpdateCompanyWithLatestQuotes(company);
         }
 
@@ -100,6 +147,7 @@ namespace QR.Business.Services
             // otherwise return today's date - MAX_MONTHS_TO_DOWNLOAD
             var lastStoredQuoteDate = company.Quotes.Any() ?
                         company.Quotes.Max(q => q.Date).Date : DateTime.Now.AddMonths(-1 * MAX_MONTHS_TO_DOWNLOAD).AddDays(-1).Date;
+
             var todaysDate = DateTime.Now.Date;
 
             // Download quotes in chuncks based off the date difference between the last stored quote date and today's date.
@@ -118,9 +166,9 @@ namespace QR.Business.Services
             // Store company for each quote.
             quotes.ForEach(q => { q.Company = company; q.CompanyId = company.Id; });
 
-            _quoteService.Add(quotes);
+            _quoteService.AddRange(quotes);
         }
-
+                
         #endregion
         #region IDisposable
 

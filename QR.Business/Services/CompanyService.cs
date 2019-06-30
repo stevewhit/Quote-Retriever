@@ -92,7 +92,7 @@ namespace QR.Business.Services
             if (company == null)
                 throw new ArgumentNullException("company");
 
-            _repository.Create(company);
+            _repository.Add(company);
             _repository.SaveChanges();
         }
 

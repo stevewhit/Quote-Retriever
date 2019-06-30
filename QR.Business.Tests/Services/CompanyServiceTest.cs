@@ -86,7 +86,7 @@ namespace QR.Business.Tests.Services
         {
             // Arrange
             var companyToAdd = new TestCompany(999);
-            _repository.Create(companyToAdd);
+            _repository.Add(companyToAdd);
 
             // Act
             var companies = _service.GetCompanies();
@@ -120,7 +120,7 @@ namespace QR.Business.Tests.Services
                 Id = id
             };
 
-            _repository.Create(companyToAdd);
+            _repository.Add(companyToAdd);
 
             // Act
             var company = _service.FindCompany(id);
@@ -139,7 +139,7 @@ namespace QR.Business.Tests.Services
                 Id = 123
             };
 
-            _repository.Create(companyToAdd);
+            _repository.Add(companyToAdd);
 
             // Act
             var company = _service.FindCompany(234);

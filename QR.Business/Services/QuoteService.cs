@@ -12,7 +12,7 @@ namespace QR.Business.Services
         IDbSet<T> GetQuotes();
         T FindQuote(int id);
         void Add(T quote);
-        void Add(IEnumerable<T> quotes);
+        void AddRange(IEnumerable<T> quotes);
         void Update(T quote);
         void Delete(int id);
         void Delete(T quote);
@@ -64,7 +64,7 @@ namespace QR.Business.Services
             if (quote == null)
                 throw new ArgumentNullException("quote");
             
-            _repository.Create(quote);
+            _repository.Add(quote);
             _repository.SaveChanges();
         }
 
@@ -72,7 +72,7 @@ namespace QR.Business.Services
         /// Adds the supplied <paramref name="quotes"/> to the repository.
         /// </summary>
         /// <param name="quotes">The quotes that are to be added.</param>
-        public void Add(IEnumerable<T> quotes)
+        public void AddRange(IEnumerable<T> quotes)
         {
             if (_isDisposed)
                 throw new ObjectDisposedException("QuoteService", "The service has been disposed.");
@@ -80,14 +80,7 @@ namespace QR.Business.Services
             if (quotes == null)
                 throw new ArgumentNullException("quotes");
 
-            foreach (var quote in quotes)
-            {
-                if (quote == null)
-                    throw new ArgumentNullException("quote");
-
-                _repository.Create(quote);
-            }
-            
+            _repository.AddRange(quotes);
             _repository.SaveChanges();
         }
 

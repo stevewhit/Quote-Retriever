@@ -176,7 +176,7 @@ namespace QR.Business.Tests.Services
             company.Quotes = fakequotes.Cast<Quote>().ToList();
 
             _companyService.Add(company);
-            _quoteService.Add(fakequotes);
+            _quoteService.AddRange(fakequotes);
 
             // Act
             var quotesCountBefore = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
@@ -198,7 +198,7 @@ namespace QR.Business.Tests.Services
             company.Quotes = fakequotes.Cast<Quote>().ToList();
 
             _companyService.Add(company);
-            _quoteService.Add(fakequotes);
+            _quoteService.AddRange(fakequotes);
 
             // Act
             var quotesCountBefore = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
@@ -220,7 +220,7 @@ namespace QR.Business.Tests.Services
             company.Quotes = fakequotes.Cast<Quote>().ToList();
 
             _companyService.Add(company);
-            _quoteService.Add(fakequotes); 
+            _quoteService.AddRange(fakequotes); 
 
             // Act
             var quotesCountBefore = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
@@ -242,7 +242,7 @@ namespace QR.Business.Tests.Services
             company.Quotes = fakequotes.Cast<Quote>().ToList();
 
             _companyService.Add(company);
-            _quoteService.Add(fakequotes);
+            _quoteService.AddRange(fakequotes);
 
             // Act
             var quotesCountBefore = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
@@ -264,7 +264,7 @@ namespace QR.Business.Tests.Services
             company.Quotes = fakequotes.Cast<Quote>().ToList();
 
             _companyService.Add(company);
-            _quoteService.Add(fakequotes); 
+            _quoteService.AddRange(fakequotes); 
 
             // Act
             var quotesCountBefore = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
@@ -286,7 +286,7 @@ namespace QR.Business.Tests.Services
             company.Quotes = fakequotes.Cast<Quote>().ToList();
 
             _companyService.Add(company);
-            _quoteService.Add(fakequotes); 
+            _quoteService.AddRange(fakequotes); 
 
             // Act
             var quotesCountBefore = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
@@ -308,7 +308,7 @@ namespace QR.Business.Tests.Services
             company.Quotes = fakequotes.Cast<Quote>().ToList();
 
             _companyService.Add(company);
-            _quoteService.Add(fakequotes);
+            _quoteService.AddRange(fakequotes);
 
             // Act
             var quotesCountBefore = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
@@ -330,7 +330,7 @@ namespace QR.Business.Tests.Services
             company.Quotes = fakequotes.Cast<Quote>().ToList();
 
             _companyService.Add(company);
-            _quoteService.Add(fakequotes);
+            _quoteService.AddRange(fakequotes);
 
             // Act
             var quotesCountBefore = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
@@ -352,7 +352,7 @@ namespace QR.Business.Tests.Services
             company.Quotes = fakequotes.Cast<Quote>().ToList();
 
             _companyService.Add(company);
-            _quoteService.Add(fakequotes);
+            _quoteService.AddRange(fakequotes);
 
             // Act
             var quotesCountBefore = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
@@ -374,7 +374,7 @@ namespace QR.Business.Tests.Services
             company.Quotes = fakequotes.Cast<Quote>().ToList();
 
             _companyService.Add(company);
-            _quoteService.Add(fakequotes);
+            _quoteService.AddRange(fakequotes);
 
             // Act
             var quotesCountBefore = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
@@ -396,7 +396,7 @@ namespace QR.Business.Tests.Services
             company.Quotes = fakequotes.Cast<Quote>().ToList();
 
             _companyService.Add(company);
-            _quoteService.Add(fakequotes);
+            _quoteService.AddRange(fakequotes);
 
             // Act
             var quotesCountBefore = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
@@ -418,7 +418,7 @@ namespace QR.Business.Tests.Services
             company.Quotes = fakequotes.Cast<Quote>().ToList();
 
             _companyService.Add(company);
-            _quoteService.Add(fakequotes);
+            _quoteService.AddRange(fakequotes);
 
             // Act
             var quotesCountBefore = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
@@ -440,7 +440,7 @@ namespace QR.Business.Tests.Services
             company.Quotes = fakequotes.Cast<Quote>().ToList();
 
             _companyService.Add(company);
-            _quoteService.Add(fakequotes);
+            _quoteService.AddRange(fakequotes);
 
             // Act
             var quotesCountBefore = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
@@ -462,7 +462,7 @@ namespace QR.Business.Tests.Services
             company.Quotes = fakequotes.Cast<Quote>().ToList();
 
             _companyService.Add(company);
-            _quoteService.Add(fakequotes);
+            _quoteService.AddRange(fakequotes);
 
             // Act
             var quotesCountBefore = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
@@ -484,7 +484,7 @@ namespace QR.Business.Tests.Services
             company.Quotes = fakequotes.Cast<Quote>().ToList();
 
             _companyService.Add(company);
-            _quoteService.Add(fakequotes);
+            _quoteService.AddRange(fakequotes);
 
             // Act
             var quotesCountBefore = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
@@ -506,7 +506,7 @@ namespace QR.Business.Tests.Services
             company.Quotes = fakequotes.Cast<Quote>().ToList();
 
             _companyService.Add(company);
-            _quoteService.Add(fakequotes);
+            _quoteService.AddRange(fakequotes);
 
             // Act
             var quotesCountBefore = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
@@ -528,7 +528,7 @@ namespace QR.Business.Tests.Services
             company.Quotes = fakequotes.Cast<Quote>().ToList();
 
             _companyService.Add(company);
-            _quoteService.Add(fakequotes);
+            _quoteService.AddRange(fakequotes);
 
             // Act
             var quotesCountBefore = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
@@ -550,7 +550,7 @@ namespace QR.Business.Tests.Services
             company.Quotes = fakequotes.Cast<Quote>().ToList();
 
             _companyService.Add(company);
-            _quoteService.Add(fakequotes);
+            _quoteService.AddRange(fakequotes);
 
             // Act
             var quotesCountBefore = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
@@ -572,7 +572,7 @@ namespace QR.Business.Tests.Services
             company.Quotes = fakequotes.Cast<Quote>().ToList();
 
             _companyService.Add(company);
-            _quoteService.Add(fakequotes);
+            _quoteService.AddRange(fakequotes);
 
             // Act
             var quotesCountBefore = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
@@ -594,7 +594,7 @@ namespace QR.Business.Tests.Services
             company.Quotes = fakequotes.Cast<Quote>().ToList();
 
             _companyService.Add(company);
-            _quoteService.Add(fakequotes);
+            _quoteService.AddRange(fakequotes);
 
             // Act
             var quotesCountBefore = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
@@ -616,7 +616,7 @@ namespace QR.Business.Tests.Services
             company.Quotes = fakequotes.Cast<Quote>().ToList();
 
             _companyService.Add(company);
-            _quoteService.Add(fakequotes);
+            _quoteService.AddRange(fakequotes);
 
             // Act
             var quotesCountBefore = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
