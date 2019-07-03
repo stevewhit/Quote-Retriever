@@ -2,6 +2,9 @@
 using StockMarket.DataModel;
 using System.Linq;
 using StockMarket.Generic.Downloaders;
+using System.Collections.Generic;
+using Framework.Generic.Utility;
+using System.Threading.Tasks;
 
 namespace QR.Business.Services
 {
@@ -12,30 +15,23 @@ namespace QR.Business.Services
         /// </summary>
         /// <param name="tickerSymbol">The ticker symbol of the company to download.</param>
         /// <returns>Returns a new company after downloading all relevant information for the <paramref name="tickerSymbol"/>.</returns>
-        C DownloadCompany(string tickerSymbol);
+        Task<C> DownloadCompanyAsync(string tickerSymbol);
 
         /// <summary>
         /// Updates the company details for all companies that are marked to be updated by downloading all relevant company information
         /// and updating the existing entity object.
         /// </summary>
-        void UpdateAllCompanyDetails();
-
-        /// <summary>
-        /// Downloads and stores quotes for a given company, up to a max range. 
-        /// NOTE: Does not override existing quotes.
-        /// </summary>
-        /// <param name="id">The ID of the company to store the quotes for.</param> 
-        void UpdateCompanyWithLatestQuotes(int id);
+        Task UpdateAllCompanyDetailsAsync();
 
         /// <summary>
         /// Downloads and stores quotes for all active companies, up to max range.
         /// </summary>
-        void UpdateAllCompaniesWithLatestQuotes();
+        Task UpdateAllCompaniesWithLatestQuotesAsync();
     }
 
     public class MarketService<C, Q> : IMarketService<C, Q> where C : Company where Q : Quote
     {
-        private const int MAX_MONTHS_TO_DOWNLOAD = 24;
+        private const int MAX_MONTHS_TO_DOWNLOAD = 1;
 
         private readonly ICompanyService<C> _companyService;
         private readonly IQuoteService<Q> _quoteService;
@@ -53,11 +49,11 @@ namespace QR.Business.Services
         #region IMarketService<C, Q>
 
         /// <summary>
-        /// Creates and returns a new company by downloading all relevant information for the <paramref name="tickerSymbol"/>.
+        /// Asycronously creates and returns a new company by downloading all relevant information for the <paramref name="tickerSymbol"/>.
         /// </summary>
         /// <param name="tickerSymbol">The ticker symbol of the company to download.</param>
         /// <returns>Returns a new company after downloading all relevant information for the <paramref name="tickerSymbol"/>.</returns>
-        public C DownloadCompany(string tickerSymbol)
+        public async Task<C> DownloadCompanyAsync(string tickerSymbol)
         {
             if (_isDisposed)
                 throw new ObjectDisposedException("MarketService", "The service has been disposed.");
@@ -65,28 +61,46 @@ namespace QR.Business.Services
             if (string.IsNullOrEmpty(tickerSymbol))
                 throw new ArgumentNullException("tickerSymbol");
 
-            return _downloader.DownloadCompanyDetails(tickerSymbol);
+            return await Task.Run(() =>
+            {
+                return _downloader.DownloadCompanyDetails(tickerSymbol);
+            });
         }
 
         /// <summary>
-        /// Updates the company details for all companies that are marked to be updated by downloading all relevant company information
+        /// Asycronously updates the company details for all companies that are marked to be updated, by downloading all relevant company information
         /// and updating the existing entity object.
         /// </summary>
-        public void UpdateAllCompanyDetails()
+        public async Task UpdateAllCompanyDetailsAsync()
         {
             if (_isDisposed)
                 throw new ObjectDisposedException("MarketService", "The service has been disposed.");
+
+            // Asyncronously download details for each company
+            var downloadTasks = _companyService.GetCompanies().Where(c => c.DownloadDetailsFlag).ToList().Select(c => GetCompanyDetailsAsync(c));
+            var updatedCompanies = await Task.WhenAll(downloadTasks);
             
-            foreach (var company in _companyService.GetCompanies().Where(c => c.DownloadDetailsFlag).ToList())
+            updatedCompanies.ForEach(c =>
             {
-                var downloadedCompany = DownloadCompany(company.Symbol);
+                c.DownloadDetailsFlag = false;
+                _companyService.Update(c);
+            });
+        }
 
+        /// <summary>
+        /// Asycronously downloads details for a given company.
+        /// </summary>
+        /// <param name="company">The company to download details for.</param>
+        /// <returns>Returns the updated company object after it has been updated with the downloaded details.</returns>
+        private async Task<C> GetCompanyDetailsAsync(C company)
+        {
+            return await Task.Run(() =>
+            {
+                var downloadedCompany = _downloader.DownloadCompanyDetails(company.Symbol);
                 CopyDownloadedCompanyDetails(company, downloadedCompany);
-
-                company.DownloadDetailsFlag = false;
-
-                _companyService.Update(company);
-            }
+                
+                return company;
+            });
         }
 
         /// <summary>
@@ -110,38 +124,32 @@ namespace QR.Business.Services
         }
 
         /// <summary>
-        /// Downloads and stores quotes for a given company, up to a max range. 
-        /// NOTE: Does not override existing quotes.
-        /// </summary>
-        /// <param name="id">The ID of the company to store the quotes for.</param>
-        public void UpdateCompanyWithLatestQuotes(int id)
-        {
-            if (_isDisposed)
-                throw new ObjectDisposedException("MarketService", "The service has been disposed.");
-            
-            var company = _companyService.FindCompany(id) ?? throw new ArgumentException($"A company with the id='{id}' does not exist.");
-
-            UpdateCompanyWithLatestQuotes(company);
-        }
-
-        /// <summary>
         /// Downloads and stores quotes for all active companies up to max range of quotes.
         /// </summary>
-        public void UpdateAllCompaniesWithLatestQuotes()
+        public async Task UpdateAllCompaniesWithLatestQuotesAsync()
         {
             if (_isDisposed)
                 throw new ObjectDisposedException("MarketService", "The service has been disposed.");
 
-            foreach (var company in _companyService.GetCompanies().Where(c => c.RetrieveQuotesFlag).ToList())
-                UpdateCompanyWithLatestQuotes(company);
+            // Start the async downloads for each company and add the new
+            // quote data as the tasks finish.
+            var downloadTasks = _companyService.GetCompanies().Where(c => c.RetrieveQuotesFlag).ToList().Select(c => GetLatestQuotesForCompanyAsync(c)).ToList();
+            while (downloadTasks.Count() > 0)
+            {
+                var completedTask = await Task.WhenAny(downloadTasks);
+
+                downloadTasks.Remove(completedTask);
+                
+                _quoteService.AddRange(await completedTask);
+            }
         }
 
         /// <summary>
-        /// Downloads and stores quotes for a given company, up to a max range. 
-        /// NOTE: Does not override existing quotes.
+        /// Asycronously downloads and returns quotes for a given company, up to a max range. 
         /// </summary>
         /// <param name="company">The company to store the quotes for.</param>
-        private void UpdateCompanyWithLatestQuotes(C company)
+        /// <returns>Returns the downloaded quotes for the given company.</returns>
+        private async Task<IEnumerable<Q>> GetLatestQuotesForCompanyAsync(C company)
         {
             // If quotes are stored for this company, return the last date a quote was stored for; 
             // otherwise return today's date - MAX_MONTHS_TO_DOWNLOAD
@@ -150,23 +158,24 @@ namespace QR.Business.Services
 
             var todaysDate = DateTime.Now.Date;
 
-            // Download quotes in chuncks based off the date difference between the last stored quote date and today's date.
-            var downloadedQuotes = lastStoredQuoteDate.AddDays(1) >= todaysDate ? new[] { _downloader.DownloadPreviousDayQuote(company.Symbol) } :
-                                   lastStoredQuoteDate.AddDays(5) >= todaysDate ? _downloader.DownloadQuotesFiveDays(company.Symbol) :
-                                   lastStoredQuoteDate.AddMonths(1) >= todaysDate ? _downloader.DownloadQuotesOneMonth(company.Symbol) :
-                                   lastStoredQuoteDate.AddMonths(3) >= todaysDate ? _downloader.DownloadQuotesThreeMonths(company.Symbol) :
-                                   lastStoredQuoteDate.AddMonths(5) >= todaysDate ? _downloader.DownloadQuotesFiveMonths(company.Symbol) :
-                                   lastStoredQuoteDate.AddYears(1) >= todaysDate ? _downloader.DownloadQuotesOneYear(company.Symbol) :
-                                   lastStoredQuoteDate.AddYears(2) >= todaysDate ? _downloader.DownloadQuotesTwoYears(company.Symbol) :
-                                   _downloader.DownloadQuotesTwoYears(company.Symbol);
+            return await Task.Run(() =>
+            {   
+                // Download quotes in chuncks based off the date difference between the last stored quote date and today's date.
+                var downloadedQuotes = lastStoredQuoteDate.AddDays(1) >= todaysDate ? new[] { _downloader.DownloadPreviousDayQuote(company.Symbol) } :
+                                       lastStoredQuoteDate.AddDays(5) >= todaysDate ? _downloader.DownloadQuotesFiveDays(company.Symbol) :
+                                       lastStoredQuoteDate.AddMonths(1) >= todaysDate ? _downloader.DownloadQuotesOneMonth(company.Symbol) :
+                                       lastStoredQuoteDate.AddMonths(3) >= todaysDate ? _downloader.DownloadQuotesThreeMonths(company.Symbol) :
+                                       lastStoredQuoteDate.AddMonths(5) >= todaysDate ? _downloader.DownloadQuotesFiveMonths(company.Symbol) :
+                                       lastStoredQuoteDate.AddYears(1) >= todaysDate ? _downloader.DownloadQuotesOneYear(company.Symbol) :
+                                       lastStoredQuoteDate.AddYears(2) >= todaysDate ? _downloader.DownloadQuotesTwoYears(company.Symbol) :
+                                       _downloader.DownloadQuotesTwoYears(company.Symbol);
 
-            // Remove any duplicate dates
-            var quotes = downloadedQuotes.Where(q => q.Date > lastStoredQuoteDate && !company.Quotes.Any(cq => cq.Date == q.Date)).OrderBy(q => q.Date).ToList();
+                // Remove any duplicate dates
+                var quotes = downloadedQuotes.Where(q => q.Date > lastStoredQuoteDate && !company.Quotes.Any(cq => cq.Date == q.Date)).OrderBy(q => q.Date).ToList();
 
-            // Store company for each quote.
-            quotes.ForEach(q => { q.Company = company; q.CompanyId = company.Id; });
-
-            _quoteService.AddRange(quotes);
+                // Store company for each quote.
+                return quotes.ForEach<Q>(q => { q.Company = company; q.CompanyId = company.Id; });
+            });
         }
                 
         #endregion
