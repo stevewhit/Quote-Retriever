@@ -1,4 +1,5 @@
-﻿using StockMarket.DataModel;
+﻿using log4net;
+using StockMarket.DataModel;
 using Ninject;
 using System.Reflection;
 using QR.Business.Services;
