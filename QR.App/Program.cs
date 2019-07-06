@@ -15,7 +15,6 @@ namespace QR.App
             kernel.Load(Assembly.GetExecutingAssembly());
 
             var marketService = kernel.Get<IMarketService<Company, Quote>>();
-            var log = kernel.Get<ILog>();
 
             try
             {
@@ -23,7 +22,7 @@ namespace QR.App
             }
             catch (AggregateException e)
             {
-                LogRecursive(log, e, "Error occured downloading stock details");
+                LogRecursive(kernel.Get<ILog>(), e, "Error occured downloading stock details");
             }
 
             try
@@ -32,7 +31,7 @@ namespace QR.App
             }
             catch (AggregateException e)
             {
-                LogRecursive(log, e, "Error occured downloading stock data");
+                LogRecursive(kernel.Get<ILog>(), e, "Error occured downloading stock data");
             }
             
             marketService.Dispose();

@@ -371,10 +371,8 @@ namespace QR.Business.Tests.Services
             _marketService.UpdateAllCompaniesWithLatestQuotesAsync().Wait();
             var quotesCountAfter = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
 
-            var maxDays = DaysUntil(DateTime.Now.AddYears(-2));
-
             // Assert
-            Assert.IsTrue(quotesCountAfter == maxDays);
+            Assert.IsTrue(quotesCountAfter == DaysUntil(DateTime.Now.AddYears(-2)));
         }
 
         [TestMethod]
@@ -398,7 +396,7 @@ namespace QR.Business.Tests.Services
             var quotesCountAfter = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
 
             // Assert
-            Assert.IsTrue(quotesCountAfter == daysToSkip);
+            Assert.IsTrue(quotesCountAfter == DaysUntil(DateTime.Now.AddYears(-2)) + 1);
         }
 
         [TestMethod]
@@ -422,7 +420,7 @@ namespace QR.Business.Tests.Services
             var quotesCountAfter = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
 
             // Assert
-            Assert.IsTrue(quotesCountAfter == daysToSkip + 1);
+            Assert.IsTrue(quotesCountAfter == DaysUntil(DateTime.Now.AddYears(-2)) + 1);
         }
 
         [TestMethod]
@@ -446,11 +444,11 @@ namespace QR.Business.Tests.Services
             var quotesCountAfter = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
 
             // Assert
-            Assert.IsTrue(quotesCountAfter == daysToSkip + 1);
+            Assert.IsTrue(quotesCountAfter == DaysUntil(DateTime.Now.AddYears(-2)));
         }
 
         [TestMethod]
-        public void UpdateAllCompaniesWithLatestQuotesAsync_WithValidCompanyIdAndQuotes_Updates1YearQuotesForCompany1()
+        public void UpdateAllCompaniesWithLatestQuotesAsync_WithValidCompanyIdAndQuotes_Updates2YearQuotesForCompany4()
         {
             // Arrange
             var company = FakeCompaniesBuilder.CreateFakeCompanyAAPL();
@@ -470,11 +468,11 @@ namespace QR.Business.Tests.Services
             var quotesCountAfter = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
 
             // Assert
-            Assert.IsTrue(quotesCountAfter == daysToSkip + 1);
+            Assert.IsTrue(quotesCountAfter == DaysUntil(DateTime.Now.AddYears(-2)));
         }
 
         [TestMethod]
-        public void UpdateAllCompaniesWithLatestQuotesAsync_WithValidCompanyIdAndQuotes_Updates1YearQuotesForCompany2()
+        public void UpdateAllCompaniesWithLatestQuotesAsync_WithValidCompanyIdAndQuotes_Updates2YearsQuotesForCompany5()
         {
             // Arrange
             var company = FakeCompaniesBuilder.CreateFakeCompanyAAPL();
@@ -494,11 +492,11 @@ namespace QR.Business.Tests.Services
             var quotesCountAfter = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
 
             // Assert
-            Assert.IsTrue(quotesCountAfter == daysToSkip + 1);
+            Assert.IsTrue(quotesCountAfter == DaysUntil(DateTime.Now.AddYears(-2)));
         }
 
         [TestMethod]
-        public void UpdateAllCompaniesWithLatestQuotesAsync_WithValidCompanyIdAndQuotes_Updates1YearQuotesForCompany3()
+        public void UpdateAllCompaniesWithLatestQuotesAsync_WithValidCompanyIdAndQuotes_Updates1YearQuotesForCompany1()
         {
             // Arrange
             var company = FakeCompaniesBuilder.CreateFakeCompanyAAPL();
@@ -518,11 +516,11 @@ namespace QR.Business.Tests.Services
             var quotesCountAfter = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
 
             // Assert
-            Assert.IsTrue(quotesCountAfter == daysToSkip + 1);
+            Assert.IsTrue(quotesCountAfter == DaysUntil(DateTime.Now.AddYears(-1)));
         }
 
         [TestMethod]
-        public void UpdateAllCompaniesWithLatestQuotesAsync_WithValidCompanyIdAndQuotes_Updates5MonthQuotesForCompany1()
+        public void UpdateAllCompaniesWithLatestQuotesAsync_WithValidCompanyIdAndQuotes_Updates1YearQuotesForCompany2()
         {
             // Arrange
             var company = FakeCompaniesBuilder.CreateFakeCompanyAAPL();
@@ -542,11 +540,11 @@ namespace QR.Business.Tests.Services
             var quotesCountAfter = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
 
             // Assert
-            Assert.IsTrue(quotesCountAfter == daysToSkip + 1);
+            Assert.IsTrue(quotesCountAfter == DaysUntil(DateTime.Now.AddYears(-1)));
         }
 
         [TestMethod]
-        public void UpdateAllCompaniesWithLatestQuotesAsync_WithValidCompanyIdAndQuotes_Updates5MonthQuotesForCompany2()
+        public void UpdateAllCompaniesWithLatestQuotesAsync_WithValidCompanyIdAndQuotes_Updates1YearQuotesForCompany3()
         {
             // Arrange
             var company = FakeCompaniesBuilder.CreateFakeCompanyAAPL();
@@ -566,11 +564,11 @@ namespace QR.Business.Tests.Services
             var quotesCountAfter = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
 
             // Assert
-            Assert.IsTrue(quotesCountAfter == daysToSkip + 1);
+            Assert.IsTrue(quotesCountAfter == DaysUntil(DateTime.Now.AddYears(-1)));
         }
 
         [TestMethod]
-        public void UpdateAllCompaniesWithLatestQuotesAsync_WithValidCompanyIdAndQuotes_Updates5MonthQuotesForCompany3()
+        public void UpdateAllCompaniesWithLatestQuotesAsync_WithValidCompanyIdAndQuotes_Updates5MonthQuotesForCompany1()
         {
             // Arrange
             var company = FakeCompaniesBuilder.CreateFakeCompanyAAPL();
@@ -590,11 +588,11 @@ namespace QR.Business.Tests.Services
             var quotesCountAfter = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
 
             // Assert
-            Assert.IsTrue(quotesCountAfter == daysToSkip + 1);
+            Assert.IsTrue(quotesCountAfter == DaysUntil(DateTime.Now.AddMonths(-5)));
         }
 
         [TestMethod]
-        public void UpdateAllCompaniesWithLatestQuotesAsync_WithValidCompanyIdAndQuotes_Updates3MonthQuotesForCompany1()
+        public void UpdateAllCompaniesWithLatestQuotesAsync_WithValidCompanyIdAndQuotes_Updates5MonthQuotesForCompany2()
         {
             // Arrange
             var company = FakeCompaniesBuilder.CreateFakeCompanyAAPL();
@@ -614,11 +612,11 @@ namespace QR.Business.Tests.Services
             var quotesCountAfter = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
 
             // Assert
-            Assert.IsTrue(quotesCountAfter == daysToSkip + 1);
+            Assert.IsTrue(quotesCountAfter == DaysUntil(DateTime.Now.AddMonths(-5)));
         }
 
         [TestMethod]
-        public void UpdateAllCompaniesWithLatestQuotesAsync_WithValidCompanyIdAndQuotes_Updates3MonthQuotesForCompany2()
+        public void UpdateAllCompaniesWithLatestQuotesAsync_WithValidCompanyIdAndQuotes_Updates5MonthQuotesForCompany3()
         {
             // Arrange
             var company = FakeCompaniesBuilder.CreateFakeCompanyAAPL();
@@ -638,11 +636,11 @@ namespace QR.Business.Tests.Services
             var quotesCountAfter = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
 
             // Assert
-            Assert.IsTrue(quotesCountAfter == daysToSkip + 1);
+            Assert.IsTrue(quotesCountAfter == DaysUntil(DateTime.Now.AddMonths(-5)));
         }
 
         [TestMethod]
-        public void UpdateAllCompaniesWithLatestQuotesAsync_WithValidCompanyIdAndQuotes_Updates3MonthQuotesForCompany3()
+        public void UpdateAllCompaniesWithLatestQuotesAsync_WithValidCompanyIdAndQuotes_Updates3MonthQuotesForCompany1()
         {
             // Arrange
             var company = FakeCompaniesBuilder.CreateFakeCompanyAAPL();
@@ -662,11 +660,11 @@ namespace QR.Business.Tests.Services
             var quotesCountAfter = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
 
             // Assert
-            Assert.IsTrue(quotesCountAfter == daysToSkip + 1);
+            Assert.IsTrue(quotesCountAfter == DaysUntil(DateTime.Now.AddMonths(-3)));
         }
 
         [TestMethod]
-        public void UpdateAllCompaniesWithLatestQuotesAsync_WithValidCompanyIdAndQuotes_Updates1MonthQuotesForCompany1()
+        public void UpdateAllCompaniesWithLatestQuotesAsync_WithValidCompanyIdAndQuotes_Updates3MonthQuotesForCompany2()
         {
             // Arrange
             var company = FakeCompaniesBuilder.CreateFakeCompanyAAPL();
@@ -686,11 +684,11 @@ namespace QR.Business.Tests.Services
             var quotesCountAfter = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
 
             // Assert
-            Assert.IsTrue(quotesCountAfter == daysToSkip + 1);
+            Assert.IsTrue(quotesCountAfter == DaysUntil(DateTime.Now.AddMonths(-3)));
         }
 
         [TestMethod]
-        public void UpdateAllCompaniesWithLatestQuotesAsync_WithValidCompanyIdAndQuotes_Updates1MonthQuotesForCompany2()
+        public void UpdateAllCompaniesWithLatestQuotesAsync_WithValidCompanyIdAndQuotes_Updates3MonthsQuotesForCompany4()
         {
             // Arrange
             var company = FakeCompaniesBuilder.CreateFakeCompanyAAPL();
@@ -710,11 +708,11 @@ namespace QR.Business.Tests.Services
             var quotesCountAfter = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
 
             // Assert
-            Assert.IsTrue(quotesCountAfter == daysToSkip + 1);
+            Assert.IsTrue(quotesCountAfter == DaysUntil(DateTime.Now.AddMonths(-3)));
         }
 
         [TestMethod]
-        public void UpdateAllCompaniesWithLatestQuotesAsync_WithValidCompanyIdAndQuotes_Updates1MonthQuotesForCompany3()
+        public void UpdateAllCompaniesWithLatestQuotesAsync_WithValidCompanyIdAndQuotes_Updates1MonthQuotesForCompany1()
         {
             // Arrange
             var company = FakeCompaniesBuilder.CreateFakeCompanyAAPL();
@@ -734,11 +732,11 @@ namespace QR.Business.Tests.Services
             var quotesCountAfter = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
 
             // Assert
-            Assert.IsTrue(quotesCountAfter == daysToSkip + 1);
+            Assert.IsTrue(quotesCountAfter == DaysUntil(DateTime.Now.AddMonths(-1)));
         }
 
         [TestMethod]
-        public void UpdateAllCompaniesWithLatestQuotesAsync_WithValidCompanyIdAndQuotes_Updates5DaysQuotesForCompany1()
+        public void UpdateAllCompaniesWithLatestQuotesAsync_WithValidCompanyIdAndQuotes_Updates1MonthQuotesForCompany2()
         {
             // Arrange
             var company = FakeCompaniesBuilder.CreateFakeCompanyAAPL();
@@ -758,11 +756,11 @@ namespace QR.Business.Tests.Services
             var quotesCountAfter = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
 
             // Assert
-            Assert.IsTrue(quotesCountAfter == daysToSkip + 1);
+            Assert.IsTrue(quotesCountAfter == DaysUntil(DateTime.Now.AddMonths(-1)));
         }
 
         [TestMethod]
-        public void UpdateAllCompaniesWithLatestQuotesAsync_WithValidCompanyIdAndQuotes_Updates5DaysQuotesForCompany2()
+        public void UpdateAllCompaniesWithLatestQuotesAsync_WithValidCompanyIdAndQuotes_Updates1MonthQuotesForCompany3()
         {
             // Arrange
             var company = FakeCompaniesBuilder.CreateFakeCompanyAAPL();
@@ -782,11 +780,11 @@ namespace QR.Business.Tests.Services
             var quotesCountAfter = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
 
             // Assert
-            Assert.IsTrue(quotesCountAfter == daysToSkip + 1);
+            Assert.IsTrue(quotesCountAfter == DaysUntil(DateTime.Now.AddMonths(-1)));
         }
 
         [TestMethod]
-        public void UpdateAllCompaniesWithLatestQuotesAsync_WithValidCompanyIdAndQuotes_Updates5DaysQuotesForCompany3()
+        public void UpdateAllCompaniesWithLatestQuotesAsync_WithValidCompanyIdAndQuotes_Updates5DaysQuotesForCompany1()
         {
             // Arrange
             var company = FakeCompaniesBuilder.CreateFakeCompanyAAPL();
@@ -806,11 +804,11 @@ namespace QR.Business.Tests.Services
             var quotesCountAfter = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
 
             // Assert
-            Assert.IsTrue(quotesCountAfter == daysToSkip + 1);
+            Assert.IsTrue(quotesCountAfter == DaysUntil(DateTime.Now.AddDays(-5)));
         }
 
         [TestMethod]
-        public void UpdateAllCompaniesWithLatestQuotesAsync_WithValidCompanyIdAndQuotes_Updates1DaysQuotesForCompany1()
+        public void UpdateAllCompaniesWithLatestQuotesAsync_WithValidCompanyIdAndQuotes_Updates5DaysQuotesForCompany2()
         {
             // Arrange
             var company = FakeCompaniesBuilder.CreateFakeCompanyAAPL();
@@ -830,11 +828,11 @@ namespace QR.Business.Tests.Services
             var quotesCountAfter = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
 
             // Assert
-            Assert.IsTrue(quotesCountAfter == daysToSkip + 1);
+            Assert.IsTrue(quotesCountAfter == DaysUntil(DateTime.Now.AddDays(-5)));
         }
 
         [TestMethod]
-        public void UpdateAllCompaniesWithLatestQuotesAsync_WithValidCompanyIdAndQuotes_Updates1DaysQuotesForCompany2()
+        public void UpdateAllCompaniesWithLatestQuotesAsync_WithValidCompanyIdAndQuotes_Updates5DaysQuotesForCompany3()
         {
             // Arrange
             var company = FakeCompaniesBuilder.CreateFakeCompanyAAPL();
@@ -854,11 +852,11 @@ namespace QR.Business.Tests.Services
             var quotesCountAfter = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
 
             // Assert
-            Assert.IsTrue(quotesCountAfter == daysToSkip + 1);
+            Assert.IsTrue(quotesCountAfter == DaysUntil(DateTime.Now.AddDays(-5)));
         }
 
         [TestMethod]
-        public void UpdateAllCompaniesWithLatestQuotesAsync_WithValidCompanyIdAndQuotes_Updates1DaysQuotesForCompany3()
+        public void UpdateAllCompaniesWithLatestQuotesAsync_WithValidCompanyIdAndQuotes_Updates1DaysQuotesForCompany1()
         {
             // Arrange
             var company = FakeCompaniesBuilder.CreateFakeCompanyAAPL();
@@ -878,7 +876,7 @@ namespace QR.Business.Tests.Services
             var quotesCountAfter = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
 
             // Assert
-            Assert.IsTrue(quotesCountAfter == daysToSkip + 1);
+            Assert.IsTrue(quotesCountAfter == DaysUntil(DateTime.Now.AddDays(-1)));
         }
 
         #endregion

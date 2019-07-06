@@ -178,11 +178,10 @@ namespace QR.Business.Services
         /// <returns>Returns the downloaded quotes for the given company.</returns>
         private async Task<IEnumerable<Q>> GetLatestQuotesForCompanyAsync(C company)
         {
-            // If quotes are stored for this company, return the last date a quote was stored for; 
-            // otherwise return today's date - MAX_MONTHS_TO_DOWNLOAD
-            var lastStoredQuoteDate = company.Quotes.Any() ?
-                        company.Quotes.Max(q => q.Date).Date : DateTime.Now.AddMonths(-1 * MAX_MONTHS_TO_DOWNLOAD).AddDays(-1).Date;
+            var companyQuotes = company.Quotes.ToList();
 
+            // If quotes are stored for this company, return the last date a quote was stored.
+            var lastStoredQuoteDate = companyQuotes.Any() ? companyQuotes.Max(q => q.Date).Date : DateTime.Now.AddMonths(-1 * MAX_MONTHS_TO_DOWNLOAD).AddDays(-1).Date;
             var todaysDate = DateTime.Now.Date;
 
             return await Task.Run(() =>
@@ -197,8 +196,8 @@ namespace QR.Business.Services
                                        lastStoredQuoteDate.AddYears(2) >= todaysDate ? _downloader.DownloadQuotesTwoYears(company.Symbol) :
                                        _downloader.DownloadQuotesTwoYears(company.Symbol);
 
-                // Remove any duplicate dates
-                var quotes = downloadedQuotes.Where(q => q.Date > lastStoredQuoteDate && !company.Quotes.Any(cq => cq.Date == q.Date)).OrderBy(q => q.Date).ToList();
+                // Remove any dates that are already stored for the company.
+                var quotes = downloadedQuotes.Where(dq => !companyQuotes.Any(cq => cq.Date == dq.Date)).OrderBy(dq => dq.Date).ToList();
 
                 // Store company for each quote.
                 return quotes.ForEach<Q>(q => { q.Company = company; q.CompanyId = company.Id; });
