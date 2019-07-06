@@ -142,6 +142,23 @@ namespace QR.Business.Tests.Services
         }
 
         [TestMethod]
+        [ExpectedException(typeof(AggregateException))]
+        public void UpdateAllCompanyDetailsAsync_WithInvalidCompany_ThrowsException()
+        {
+            // Arrange
+            var invalidCompany = new TestCompany()
+            {
+                Symbol = "INVALID",
+                DownloadDetailsFlag = true
+            };
+
+            _companyService.Add(invalidCompany);
+
+            // Act
+            _marketService.UpdateAllCompanyDetailsAsync().Wait();
+        }
+
+        [TestMethod]
         public void UpdateAllCompanyDetailsAsync_WithoutCompanies_DoesNothing()
         {
             // Act
@@ -231,519 +248,32 @@ namespace QR.Business.Tests.Services
             Assert.IsTrue(company2.CompanyName.Equals("Google", StringComparison.CurrentCultureIgnoreCase));
             Assert.IsTrue(company3.CompanyName.Equals("GoPro", StringComparison.CurrentCultureIgnoreCase));
         }
-        
+
         #endregion
-        //#region Testing void UpdateCompanyWithLatestQuotes(int id)
-
-        //[TestMethod]
-        //[ExpectedException(typeof(ObjectDisposedException))]
-        //public void UpdateCompanyWithLatestQuotes_WithDisposedService_ThrowsException()
-        //{
-        //    // Arrange
-        //    var company = FakeCompaniesBuilder.CreateFakeCompanyAAPL();
-
-        //    // Act
-        //    _marketService.Dispose();
-        //    _marketService.UpdateCompanyWithLatestQuotesAsync(company.Id);
-        //}
-
-        //[TestMethod]
-        //[ExpectedException(typeof(ArgumentException))]
-        //public void UpdateCompanyWithLatestQuotes_WithInvalidCompanyId_ThrowsException()
-        //{
-        //    // Act
-        //    _marketService.UpdateCompanyWithLatestQuotesAsync(778899);
-        //}
-
-        //[TestMethod]
-        //public void UpdateCompanyWithLatestQuotes_WithValidCompanyIdAndNoQuotes_UpdatesMaxQuotesForCompany()
-        //{
-        //    // Arrange
-        //    var company = FakeCompaniesBuilder.CreateFakeCompanyAAPL();
-        //    _companyService.Add(company);
-
-        //    // Act
-        //    var quotesCountBefore = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
-        //    _marketService.UpdateCompanyWithLatestQuotesAsync(company.Id);
-        //    var quotesCountAfter = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
-
-        //    var maxDays = DaysUntil(DateTime.Now.AddYears(-2));
-
-        //    // Assert
-        //    Assert.IsTrue(quotesCountAfter == maxDays);
-        //}
-
-        //[TestMethod]
-        //public void UpdateCompanyWithLatestQuotes_WithValidCompanyIdAndQuotes_Updates2YearQuotesForCompany1()
-        //{
-        //    // Arrange
-        //    var company = FakeCompaniesBuilder.CreateFakeCompanyAAPL();
-        //    var daysToSkip = DaysUntil(DateTime.Now.AddYears(-2)) + 1;
-        //    var fakequotes = FakeQuotesBuilder.CreateFakeQuotes(company, 1, daysToSkip).ToList();
-
-        //    company.Quotes = fakequotes.Cast<Quote>().ToList();
-
-        //    _companyService.Add(company);
-        //    _quoteService.AddRange(fakequotes);
-
-        //    // Act
-        //    var quotesCountBefore = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
-        //    _marketService.UpdateCompanyWithLatestQuotesAsync(company.Id);
-        //    var quotesCountAfter = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
-
-        //    // Assert
-        //    Assert.IsTrue(quotesCountAfter == daysToSkip);
-        //}
-
-        //[TestMethod]
-        //public void UpdateCompanyWithLatestQuotes_WithValidCompanyIdAndQuotes_Updates2YearQuotesForCompany2()
-        //{
-        //    // Arrange
-        //    var company = FakeCompaniesBuilder.CreateFakeCompanyAAPL();
-        //    var daysToSkip = DaysUntil(DateTime.Now.AddYears(-2));
-        //    var fakequotes = FakeQuotesBuilder.CreateFakeQuotes(company, 1, daysToSkip).ToList();
-
-        //    company.Quotes = fakequotes.Cast<Quote>().ToList();
-
-        //    _companyService.Add(company);
-        //    _quoteService.AddRange(fakequotes);
-
-        //    // Act
-        //    var quotesCountBefore = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
-        //    _marketService.UpdateCompanyWithLatestQuotesAsync(company.Id);
-        //    var quotesCountAfter = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
-
-        //    // Assert
-        //    Assert.IsTrue(quotesCountAfter == daysToSkip + 1);
-        //}
-
-        //[TestMethod]
-        //public void UpdateCompanyWithLatestQuotes_WithValidCompanyIdAndQuotes_Updates2YearQuotesForCompany3()
-        //{
-        //    // Arrange
-        //    var company = FakeCompaniesBuilder.CreateFakeCompanyAAPL();
-        //    var daysToSkip = DaysUntil(DateTime.Now.AddYears(-2)) - 1;
-        //    var fakequotes = FakeQuotesBuilder.CreateFakeQuotes(company, 1, daysToSkip).ToList();
-
-        //    company.Quotes = fakequotes.Cast<Quote>().ToList();
-
-        //    _companyService.Add(company);
-        //    _quoteService.AddRange(fakequotes); 
-
-        //    // Act
-        //    var quotesCountBefore = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
-        //    _marketService.UpdateCompanyWithLatestQuotesAsync(company.Id);
-        //    var quotesCountAfter = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
-
-        //    // Assert
-        //    Assert.IsTrue(quotesCountAfter == daysToSkip + 1);
-        //}
-
-        //[TestMethod]
-        //public void UpdateCompanyWithLatestQuotes_WithValidCompanyIdAndQuotes_Updates1YearQuotesForCompany1()
-        //{
-        //    // Arrange
-        //    var company = FakeCompaniesBuilder.CreateFakeCompanyAAPL();
-        //    var daysToSkip = DaysUntil(DateTime.Now.AddYears(-1)) + 1;
-        //    var fakequotes = FakeQuotesBuilder.CreateFakeQuotes(company, 1, daysToSkip).ToList();
-
-        //    company.Quotes = fakequotes.Cast<Quote>().ToList();
-
-        //    _companyService.Add(company);
-        //    _quoteService.AddRange(fakequotes);
-
-        //    // Act
-        //    var quotesCountBefore = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
-        //    _marketService.UpdateCompanyWithLatestQuotesAsync(company.Id);
-        //    var quotesCountAfter = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
-
-        //    // Assert
-        //    Assert.IsTrue(quotesCountAfter == daysToSkip + 1);
-        //}
-
-        //[TestMethod]
-        //public void UpdateCompanyWithLatestQuotes_WithValidCompanyIdAndQuotes_Updates1YearQuotesForCompany2()
-        //{
-        //    // Arrange
-        //    var company = FakeCompaniesBuilder.CreateFakeCompanyAAPL();
-        //    var daysToSkip = DaysUntil(DateTime.Now.AddYears(-1));
-        //    var fakequotes = FakeQuotesBuilder.CreateFakeQuotes(company, 1, daysToSkip).ToList();
-
-        //    company.Quotes = fakequotes.Cast<Quote>().ToList();
-
-        //    _companyService.Add(company);
-        //    _quoteService.AddRange(fakequotes); 
-
-        //    // Act
-        //    var quotesCountBefore = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
-        //    _marketService.UpdateCompanyWithLatestQuotesAsync(company.Id);
-        //    var quotesCountAfter = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
-
-        //    // Assert
-        //    Assert.IsTrue(quotesCountAfter == daysToSkip + 1);
-        //}
-
-        //[TestMethod]
-        //public void UpdateCompanyWithLatestQuotes_WithValidCompanyIdAndQuotes_Updates1YearQuotesForCompany3()
-        //{
-        //    // Arrange
-        //    var company = FakeCompaniesBuilder.CreateFakeCompanyAAPL();
-        //    var daysToSkip = DaysUntil(DateTime.Now.AddYears(-1)) - 1;
-        //    var fakequotes = FakeQuotesBuilder.CreateFakeQuotes(company, 1, daysToSkip).ToList();
-
-        //    company.Quotes = fakequotes.Cast<Quote>().ToList();
-
-        //    _companyService.Add(company);
-        //    _quoteService.AddRange(fakequotes); 
-
-        //    // Act
-        //    var quotesCountBefore = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
-        //    _marketService.UpdateCompanyWithLatestQuotesAsync(company.Id);
-        //    var quotesCountAfter = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
-
-        //    // Assert
-        //    Assert.IsTrue(quotesCountAfter == daysToSkip + 1);
-        //}
-
-        //[TestMethod]
-        //public void UpdateCompanyWithLatestQuotes_WithValidCompanyIdAndQuotes_Updates5MonthQuotesForCompany1()
-        //{
-        //    // Arrange
-        //    var company = FakeCompaniesBuilder.CreateFakeCompanyAAPL();
-        //    var daysToSkip = DaysUntil(DateTime.Now.AddMonths(-5)) + 1;
-        //    var fakequotes = FakeQuotesBuilder.CreateFakeQuotes(company, 1, daysToSkip).ToList();
-
-        //    company.Quotes = fakequotes.Cast<Quote>().ToList();
-
-        //    _companyService.Add(company);
-        //    _quoteService.AddRange(fakequotes);
-
-        //    // Act
-        //    var quotesCountBefore = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
-        //    _marketService.UpdateCompanyWithLatestQuotesAsync(company.Id);
-        //    var quotesCountAfter = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
-
-        //    // Assert
-        //    Assert.IsTrue(quotesCountAfter == daysToSkip + 1);
-        //}
-
-        //[TestMethod]
-        //public void UpdateCompanyWithLatestQuotes_WithValidCompanyIdAndQuotes_Updates5MonthQuotesForCompany2()
-        //{
-        //    // Arrange
-        //    var company = FakeCompaniesBuilder.CreateFakeCompanyAAPL();
-        //    var daysToSkip = DaysUntil(DateTime.Now.AddMonths(-5));
-        //    var fakequotes = FakeQuotesBuilder.CreateFakeQuotes(company, 1, daysToSkip).ToList();
-
-        //    company.Quotes = fakequotes.Cast<Quote>().ToList();
-
-        //    _companyService.Add(company);
-        //    _quoteService.AddRange(fakequotes);
-
-        //    // Act
-        //    var quotesCountBefore = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
-        //    _marketService.UpdateCompanyWithLatestQuotesAsync(company.Id);
-        //    var quotesCountAfter = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
-
-        //    // Assert
-        //    Assert.IsTrue(quotesCountAfter == daysToSkip + 1);
-        //}
-
-        //[TestMethod]
-        //public void UpdateCompanyWithLatestQuotes_WithValidCompanyIdAndQuotes_Updates5MonthQuotesForCompany3()
-        //{
-        //    // Arrange
-        //    var company = FakeCompaniesBuilder.CreateFakeCompanyAAPL();
-        //    var daysToSkip = DaysUntil(DateTime.Now.AddMonths(-5)) - 1;
-        //    var fakequotes = FakeQuotesBuilder.CreateFakeQuotes(company, 1, daysToSkip).ToList();
-
-        //    company.Quotes = fakequotes.Cast<Quote>().ToList();
-
-        //    _companyService.Add(company);
-        //    _quoteService.AddRange(fakequotes);
-
-        //    // Act
-        //    var quotesCountBefore = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
-        //    _marketService.UpdateCompanyWithLatestQuotesAsync(company.Id);
-        //    var quotesCountAfter = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
-
-        //    // Assert
-        //    Assert.IsTrue(quotesCountAfter == daysToSkip + 1);
-        //}
-
-        //[TestMethod]
-        //public void UpdateCompanyWithLatestQuotes_WithValidCompanyIdAndQuotes_Updates3MonthQuotesForCompany1()
-        //{
-        //    // Arrange
-        //    var company = FakeCompaniesBuilder.CreateFakeCompanyAAPL();
-        //    var daysToSkip = DaysUntil(DateTime.Now.AddMonths(-3)) + 1;
-        //    var fakequotes = FakeQuotesBuilder.CreateFakeQuotes(company, 1, daysToSkip).ToList();
-
-        //    company.Quotes = fakequotes.Cast<Quote>().ToList();
-
-        //    _companyService.Add(company);
-        //    _quoteService.AddRange(fakequotes);
-
-        //    // Act
-        //    var quotesCountBefore = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
-        //    _marketService.UpdateCompanyWithLatestQuotesAsync(company.Id);
-        //    var quotesCountAfter = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
-
-        //    // Assert
-        //    Assert.IsTrue(quotesCountAfter == daysToSkip + 1);
-        //}
-
-        //[TestMethod]
-        //public void UpdateCompanyWithLatestQuotes_WithValidCompanyIdAndQuotes_Updates3MonthQuotesForCompany2()
-        //{
-        //    // Arrange
-        //    var company = FakeCompaniesBuilder.CreateFakeCompanyAAPL();
-        //    var daysToSkip = DaysUntil(DateTime.Now.AddMonths(-3));
-        //    var fakequotes = FakeQuotesBuilder.CreateFakeQuotes(company, 1, daysToSkip).ToList();
-
-        //    company.Quotes = fakequotes.Cast<Quote>().ToList();
-
-        //    _companyService.Add(company);
-        //    _quoteService.AddRange(fakequotes);
-
-        //    // Act
-        //    var quotesCountBefore = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
-        //    _marketService.UpdateCompanyWithLatestQuotesAsync(company.Id);
-        //    var quotesCountAfter = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
-
-        //    // Assert
-        //    Assert.IsTrue(quotesCountAfter == daysToSkip + 1);
-        //}
-
-        //[TestMethod]
-        //public void UpdateCompanyWithLatestQuotes_WithValidCompanyIdAndQuotes_Updates3MonthQuotesForCompany3()
-        //{
-        //    // Arrange
-        //    var company = FakeCompaniesBuilder.CreateFakeCompanyAAPL();
-        //    var daysToSkip = DaysUntil(DateTime.Now.AddMonths(-3)) - 1;
-        //    var fakequotes = FakeQuotesBuilder.CreateFakeQuotes(company, 1, daysToSkip).ToList();
-
-        //    company.Quotes = fakequotes.Cast<Quote>().ToList();
-
-        //    _companyService.Add(company);
-        //    _quoteService.AddRange(fakequotes);
-
-        //    // Act
-        //    var quotesCountBefore = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
-        //    _marketService.UpdateCompanyWithLatestQuotesAsync(company.Id);
-        //    var quotesCountAfter = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
-
-        //    // Assert
-        //    Assert.IsTrue(quotesCountAfter == daysToSkip + 1);
-        //}
-
-        //[TestMethod]
-        //public void UpdateCompanyWithLatestQuotes_WithValidCompanyIdAndQuotes_Updates1MonthQuotesForCompany1()
-        //{
-        //    // Arrange
-        //    var company = FakeCompaniesBuilder.CreateFakeCompanyAAPL();
-        //    var daysToSkip = DaysUntil(DateTime.Now.AddMonths(-1)) + 1;
-        //    var fakequotes = FakeQuotesBuilder.CreateFakeQuotes(company, 1, daysToSkip).ToList();
-
-        //    company.Quotes = fakequotes.Cast<Quote>().ToList();
-
-        //    _companyService.Add(company);
-        //    _quoteService.AddRange(fakequotes);
-
-        //    // Act
-        //    var quotesCountBefore = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
-        //    _marketService.UpdateCompanyWithLatestQuotesAsync(company.Id);
-        //    var quotesCountAfter = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
-
-        //    // Assert
-        //    Assert.IsTrue(quotesCountAfter == daysToSkip + 1);
-        //}
-
-        //[TestMethod]
-        //public void UpdateCompanyWithLatestQuotes_WithValidCompanyIdAndQuotes_Updates1MonthQuotesForCompany2()
-        //{
-        //    // Arrange
-        //    var company = FakeCompaniesBuilder.CreateFakeCompanyAAPL();
-        //    var daysToSkip = DaysUntil(DateTime.Now.AddMonths(-1));
-        //    var fakequotes = FakeQuotesBuilder.CreateFakeQuotes(company, 1, daysToSkip).ToList();
-
-        //    company.Quotes = fakequotes.Cast<Quote>().ToList();
-
-        //    _companyService.Add(company);
-        //    _quoteService.AddRange(fakequotes);
-
-        //    // Act
-        //    var quotesCountBefore = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
-        //    _marketService.UpdateCompanyWithLatestQuotesAsync(company.Id);
-        //    var quotesCountAfter = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
-
-        //    // Assert
-        //    Assert.IsTrue(quotesCountAfter == daysToSkip + 1);
-        //}
-
-        //[TestMethod]
-        //public void UpdateCompanyWithLatestQuotes_WithValidCompanyIdAndQuotes_Updates1MonthQuotesForCompany3()
-        //{
-        //    // Arrange
-        //    var company = FakeCompaniesBuilder.CreateFakeCompanyAAPL();
-        //    var daysToSkip = DaysUntil(DateTime.Now.AddMonths(-1)) - 1;
-        //    var fakequotes = FakeQuotesBuilder.CreateFakeQuotes(company, 1, daysToSkip).ToList();
-
-        //    company.Quotes = fakequotes.Cast<Quote>().ToList();
-
-        //    _companyService.Add(company);
-        //    _quoteService.AddRange(fakequotes);
-
-        //    // Act
-        //    var quotesCountBefore = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
-        //    _marketService.UpdateCompanyWithLatestQuotesAsync(company.Id);
-        //    var quotesCountAfter = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
-
-        //    // Assert
-        //    Assert.IsTrue(quotesCountAfter == daysToSkip + 1);
-        //}
-
-        //[TestMethod]
-        //public void UpdateCompanyWithLatestQuotes_WithValidCompanyIdAndQuotes_Updates5DaysQuotesForCompany1()
-        //{
-        //    // Arrange
-        //    var company = FakeCompaniesBuilder.CreateFakeCompanyAAPL();
-        //    var daysToSkip = DaysUntil(DateTime.Now.AddDays(-5)) + 1;
-        //    var fakequotes = FakeQuotesBuilder.CreateFakeQuotes(company, 1, daysToSkip).ToList();
-
-        //    company.Quotes = fakequotes.Cast<Quote>().ToList();
-
-        //    _companyService.Add(company);
-        //    _quoteService.AddRange(fakequotes);
-
-        //    // Act
-        //    var quotesCountBefore = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
-        //    _marketService.UpdateCompanyWithLatestQuotesAsync(company.Id);
-        //    var quotesCountAfter = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
-
-        //    // Assert
-        //    Assert.IsTrue(quotesCountAfter == daysToSkip + 1);
-        //}
-
-        //[TestMethod]
-        //public void UpdateCompanyWithLatestQuotes_WithValidCompanyIdAndQuotes_Updates5DaysQuotesForCompany2()
-        //{
-        //    // Arrange
-        //    var company = FakeCompaniesBuilder.CreateFakeCompanyAAPL();
-        //    var daysToSkip = DaysUntil(DateTime.Now.AddDays(-5));
-        //    var fakequotes = FakeQuotesBuilder.CreateFakeQuotes(company, 1, daysToSkip).ToList();
-
-        //    company.Quotes = fakequotes.Cast<Quote>().ToList();
-
-        //    _companyService.Add(company);
-        //    _quoteService.AddRange(fakequotes);
-
-        //    // Act
-        //    var quotesCountBefore = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
-        //    _marketService.UpdateCompanyWithLatestQuotesAsync(company.Id);
-        //    var quotesCountAfter = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
-
-        //    // Assert
-        //    Assert.IsTrue(quotesCountAfter == daysToSkip + 1);
-        //}
-
-        //[TestMethod]
-        //public void UpdateCompanyWithLatestQuotes_WithValidCompanyIdAndQuotes_Updates5DaysQuotesForCompany3()
-        //{
-        //    // Arrange
-        //    var company = FakeCompaniesBuilder.CreateFakeCompanyAAPL();
-        //    var daysToSkip = DaysUntil(DateTime.Now.AddDays(-5)) - 1;
-        //    var fakequotes = FakeQuotesBuilder.CreateFakeQuotes(company, 1, daysToSkip).ToList();
-
-        //    company.Quotes = fakequotes.Cast<Quote>().ToList();
-
-        //    _companyService.Add(company);
-        //    _quoteService.AddRange(fakequotes);
-
-        //    // Act
-        //    var quotesCountBefore = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
-        //    _marketService.UpdateCompanyWithLatestQuotesAsync(company.Id);
-        //    var quotesCountAfter = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
-
-        //    // Assert
-        //    Assert.IsTrue(quotesCountAfter == daysToSkip + 1);
-        //}
-
-        //[TestMethod]
-        //public void UpdateCompanyWithLatestQuotes_WithValidCompanyIdAndQuotes_Updates1DaysQuotesForCompany1()
-        //{
-        //    // Arrange
-        //    var company = FakeCompaniesBuilder.CreateFakeCompanyAAPL();
-        //    var daysToSkip = DaysUntil(DateTime.Now.AddDays(-1)) + 1;
-        //    var fakequotes = FakeQuotesBuilder.CreateFakeQuotes(company, 1, daysToSkip).ToList();
-
-        //    company.Quotes = fakequotes.Cast<Quote>().ToList();
-
-        //    _companyService.Add(company);
-        //    _quoteService.AddRange(fakequotes);
-
-        //    // Act
-        //    var quotesCountBefore = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
-        //    _marketService.UpdateCompanyWithLatestQuotesAsync(company.Id);
-        //    var quotesCountAfter = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
-
-        //    // Assert
-        //    Assert.IsTrue(quotesCountAfter == daysToSkip + 1);
-        //}
-
-        //[TestMethod]
-        //public void UpdateCompanyWithLatestQuotes_WithValidCompanyIdAndQuotes_Updates1DaysQuotesForCompany2()
-        //{
-        //    // Arrange
-        //    var company = FakeCompaniesBuilder.CreateFakeCompanyAAPL();
-        //    var daysToSkip = DaysUntil(DateTime.Now.AddDays(-1));
-        //    var fakequotes = FakeQuotesBuilder.CreateFakeQuotes(company, 1, daysToSkip).ToList();
-
-        //    company.Quotes = fakequotes.Cast<Quote>().ToList();
-
-        //    _companyService.Add(company);
-        //    _quoteService.AddRange(fakequotes);
-
-        //    // Act
-        //    var quotesCountBefore = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
-        //    _marketService.UpdateCompanyWithLatestQuotesAsync(company.Id);
-        //    var quotesCountAfter = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
-
-        //    // Assert
-        //    Assert.IsTrue(quotesCountAfter == daysToSkip + 1);
-        //}
-
-        //[TestMethod]
-        //public void UpdateCompanyWithLatestQuotes_WithValidCompanyIdAndQuotes_Updates1DaysQuotesForCompany3()
-        //{
-        //    // Arrange
-        //    var company = FakeCompaniesBuilder.CreateFakeCompanyAAPL();
-        //    var daysToSkip = DaysUntil(DateTime.Now.AddDays(-1)) - 1;
-        //    var fakequotes = FakeQuotesBuilder.CreateFakeQuotes(company, 1, daysToSkip).ToList();
-
-        //    company.Quotes = fakequotes.Cast<Quote>().ToList();
-
-        //    _companyService.Add(company);
-        //    _quoteService.AddRange(fakequotes);
-
-        //    // Act
-        //    var quotesCountBefore = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
-        //    _marketService.UpdateCompanyWithLatestQuotesAsync(company.Id);
-        //    var quotesCountAfter = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
-
-        //    // Assert
-        //    Assert.IsTrue(quotesCountAfter == daysToSkip + 1);
-        //}
-
-        //#endregion
         #region Testing Task UpdateAllCompaniesWithLatestQuotesAsync()
-
         [TestMethod]
         [ExpectedException(typeof(AggregateException))]
         public void UpdateAllCompaniesWithLatestQuotesAsync_WithDisposedService_ThrowsException()
         {
             // Arrange
             _marketService.Dispose();
+
+            // Act
+            _marketService.UpdateAllCompaniesWithLatestQuotesAsync().Wait();
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(AggregateException))]
+        public void UpdateAllCompaniesWithLatestQuotesAsync_WithInvalidCompany_ThrowsException()
+        {
+            // Arrange
+            var invalidCompany = new TestCompany()
+            {
+                Symbol = "INVALID",
+                RetrieveQuotesFlag = true
+            };
+
+            _companyService.Add(invalidCompany);
 
             // Act
             _marketService.UpdateAllCompaniesWithLatestQuotesAsync().Wait();
@@ -825,6 +355,530 @@ namespace QR.Business.Tests.Services
             Assert.IsTrue(aaplQuotes.Any());
             Assert.IsTrue(gproQuotes.Any());
             Assert.IsFalse(googQuotes.Any());
+        }
+        
+        [TestMethod]
+        public void UpdateAllCompaniesWithLatestQuotesAsync_WithValidCompanyIdAndNoQuotes_UpdatesMaxQuotesForCompany()
+        {
+            // Arrange
+            var company = FakeCompaniesBuilder.CreateFakeCompanyAAPL();
+            company.RetrieveQuotesFlag = true;
+
+            _companyService.Add(company);
+
+            // Act
+            var quotesCountBefore = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
+            _marketService.UpdateAllCompaniesWithLatestQuotesAsync().Wait();
+            var quotesCountAfter = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
+
+            var maxDays = DaysUntil(DateTime.Now.AddYears(-2));
+
+            // Assert
+            Assert.IsTrue(quotesCountAfter == maxDays);
+        }
+
+        [TestMethod]
+        public void UpdateAllCompaniesWithLatestQuotesAsync_WithValidCompanyIdAndQuotes_Updates2YearQuotesForCompany1()
+        {
+            // Arrange
+            var company = FakeCompaniesBuilder.CreateFakeCompanyAAPL();
+            company.RetrieveQuotesFlag = true;
+
+            var daysToSkip = DaysUntil(DateTime.Now.AddYears(-2)) + 1;
+            var fakequotes = FakeQuotesBuilder.CreateFakeQuotes(company, 1, daysToSkip).ToList();
+
+            company.Quotes = fakequotes.Cast<Quote>().ToList();
+
+            _companyService.Add(company);
+            _quoteService.AddRange(fakequotes);
+
+            // Act
+            var quotesCountBefore = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
+            _marketService.UpdateAllCompaniesWithLatestQuotesAsync().Wait();
+            var quotesCountAfter = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
+
+            // Assert
+            Assert.IsTrue(quotesCountAfter == daysToSkip);
+        }
+
+        [TestMethod]
+        public void UpdateAllCompaniesWithLatestQuotesAsync_WithValidCompanyIdAndQuotes_Updates2YearQuotesForCompany2()
+        {
+            // Arrange
+            var company = FakeCompaniesBuilder.CreateFakeCompanyAAPL();
+            company.RetrieveQuotesFlag = true;
+
+            var daysToSkip = DaysUntil(DateTime.Now.AddYears(-2));
+            var fakequotes = FakeQuotesBuilder.CreateFakeQuotes(company, 1, daysToSkip).ToList();
+
+            company.Quotes = fakequotes.Cast<Quote>().ToList();
+
+            _companyService.Add(company);
+            _quoteService.AddRange(fakequotes);
+
+            // Act
+            var quotesCountBefore = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
+            _marketService.UpdateAllCompaniesWithLatestQuotesAsync().Wait();
+            var quotesCountAfter = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
+
+            // Assert
+            Assert.IsTrue(quotesCountAfter == daysToSkip + 1);
+        }
+
+        [TestMethod]
+        public void UpdateAllCompaniesWithLatestQuotesAsync_WithValidCompanyIdAndQuotes_Updates2YearQuotesForCompany3()
+        {
+            // Arrange
+            var company = FakeCompaniesBuilder.CreateFakeCompanyAAPL();
+            company.RetrieveQuotesFlag = true;
+
+            var daysToSkip = DaysUntil(DateTime.Now.AddYears(-2)) - 1;
+            var fakequotes = FakeQuotesBuilder.CreateFakeQuotes(company, 1, daysToSkip).ToList();
+
+            company.Quotes = fakequotes.Cast<Quote>().ToList();
+
+            _companyService.Add(company);
+            _quoteService.AddRange(fakequotes);
+
+            // Act
+            var quotesCountBefore = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
+            _marketService.UpdateAllCompaniesWithLatestQuotesAsync().Wait();
+            var quotesCountAfter = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
+
+            // Assert
+            Assert.IsTrue(quotesCountAfter == daysToSkip + 1);
+        }
+
+        [TestMethod]
+        public void UpdateAllCompaniesWithLatestQuotesAsync_WithValidCompanyIdAndQuotes_Updates1YearQuotesForCompany1()
+        {
+            // Arrange
+            var company = FakeCompaniesBuilder.CreateFakeCompanyAAPL();
+            company.RetrieveQuotesFlag = true;
+
+            var daysToSkip = DaysUntil(DateTime.Now.AddYears(-1)) + 1;
+            var fakequotes = FakeQuotesBuilder.CreateFakeQuotes(company, 1, daysToSkip).ToList();
+
+            company.Quotes = fakequotes.Cast<Quote>().ToList();
+
+            _companyService.Add(company);
+            _quoteService.AddRange(fakequotes);
+
+            // Act
+            var quotesCountBefore = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
+            _marketService.UpdateAllCompaniesWithLatestQuotesAsync().Wait();
+            var quotesCountAfter = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
+
+            // Assert
+            Assert.IsTrue(quotesCountAfter == daysToSkip + 1);
+        }
+
+        [TestMethod]
+        public void UpdateAllCompaniesWithLatestQuotesAsync_WithValidCompanyIdAndQuotes_Updates1YearQuotesForCompany2()
+        {
+            // Arrange
+            var company = FakeCompaniesBuilder.CreateFakeCompanyAAPL();
+            company.RetrieveQuotesFlag = true;
+
+            var daysToSkip = DaysUntil(DateTime.Now.AddYears(-1));
+            var fakequotes = FakeQuotesBuilder.CreateFakeQuotes(company, 1, daysToSkip).ToList();
+
+            company.Quotes = fakequotes.Cast<Quote>().ToList();
+
+            _companyService.Add(company);
+            _quoteService.AddRange(fakequotes);
+
+            // Act
+            var quotesCountBefore = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
+            _marketService.UpdateAllCompaniesWithLatestQuotesAsync().Wait();
+            var quotesCountAfter = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
+
+            // Assert
+            Assert.IsTrue(quotesCountAfter == daysToSkip + 1);
+        }
+
+        [TestMethod]
+        public void UpdateAllCompaniesWithLatestQuotesAsync_WithValidCompanyIdAndQuotes_Updates1YearQuotesForCompany3()
+        {
+            // Arrange
+            var company = FakeCompaniesBuilder.CreateFakeCompanyAAPL();
+            company.RetrieveQuotesFlag = true;
+
+            var daysToSkip = DaysUntil(DateTime.Now.AddYears(-1)) - 1;
+            var fakequotes = FakeQuotesBuilder.CreateFakeQuotes(company, 1, daysToSkip).ToList();
+
+            company.Quotes = fakequotes.Cast<Quote>().ToList();
+
+            _companyService.Add(company);
+            _quoteService.AddRange(fakequotes);
+
+            // Act
+            var quotesCountBefore = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
+            _marketService.UpdateAllCompaniesWithLatestQuotesAsync().Wait();
+            var quotesCountAfter = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
+
+            // Assert
+            Assert.IsTrue(quotesCountAfter == daysToSkip + 1);
+        }
+
+        [TestMethod]
+        public void UpdateAllCompaniesWithLatestQuotesAsync_WithValidCompanyIdAndQuotes_Updates5MonthQuotesForCompany1()
+        {
+            // Arrange
+            var company = FakeCompaniesBuilder.CreateFakeCompanyAAPL();
+            company.RetrieveQuotesFlag = true;
+
+            var daysToSkip = DaysUntil(DateTime.Now.AddMonths(-5)) + 1;
+            var fakequotes = FakeQuotesBuilder.CreateFakeQuotes(company, 1, daysToSkip).ToList();
+
+            company.Quotes = fakequotes.Cast<Quote>().ToList();
+
+            _companyService.Add(company);
+            _quoteService.AddRange(fakequotes);
+
+            // Act
+            var quotesCountBefore = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
+            _marketService.UpdateAllCompaniesWithLatestQuotesAsync().Wait();
+            var quotesCountAfter = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
+
+            // Assert
+            Assert.IsTrue(quotesCountAfter == daysToSkip + 1);
+        }
+
+        [TestMethod]
+        public void UpdateAllCompaniesWithLatestQuotesAsync_WithValidCompanyIdAndQuotes_Updates5MonthQuotesForCompany2()
+        {
+            // Arrange
+            var company = FakeCompaniesBuilder.CreateFakeCompanyAAPL();
+            company.RetrieveQuotesFlag = true;
+
+            var daysToSkip = DaysUntil(DateTime.Now.AddMonths(-5));
+            var fakequotes = FakeQuotesBuilder.CreateFakeQuotes(company, 1, daysToSkip).ToList();
+
+            company.Quotes = fakequotes.Cast<Quote>().ToList();
+
+            _companyService.Add(company);
+            _quoteService.AddRange(fakequotes);
+
+            // Act
+            var quotesCountBefore = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
+            _marketService.UpdateAllCompaniesWithLatestQuotesAsync().Wait();
+            var quotesCountAfter = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
+
+            // Assert
+            Assert.IsTrue(quotesCountAfter == daysToSkip + 1);
+        }
+
+        [TestMethod]
+        public void UpdateAllCompaniesWithLatestQuotesAsync_WithValidCompanyIdAndQuotes_Updates5MonthQuotesForCompany3()
+        {
+            // Arrange
+            var company = FakeCompaniesBuilder.CreateFakeCompanyAAPL();
+            company.RetrieveQuotesFlag = true;
+
+            var daysToSkip = DaysUntil(DateTime.Now.AddMonths(-5)) - 1;
+            var fakequotes = FakeQuotesBuilder.CreateFakeQuotes(company, 1, daysToSkip).ToList();
+
+            company.Quotes = fakequotes.Cast<Quote>().ToList();
+
+            _companyService.Add(company);
+            _quoteService.AddRange(fakequotes);
+
+            // Act
+            var quotesCountBefore = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
+            _marketService.UpdateAllCompaniesWithLatestQuotesAsync().Wait();
+            var quotesCountAfter = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
+
+            // Assert
+            Assert.IsTrue(quotesCountAfter == daysToSkip + 1);
+        }
+
+        [TestMethod]
+        public void UpdateAllCompaniesWithLatestQuotesAsync_WithValidCompanyIdAndQuotes_Updates3MonthQuotesForCompany1()
+        {
+            // Arrange
+            var company = FakeCompaniesBuilder.CreateFakeCompanyAAPL();
+            company.RetrieveQuotesFlag = true;
+
+            var daysToSkip = DaysUntil(DateTime.Now.AddMonths(-3)) + 1;
+            var fakequotes = FakeQuotesBuilder.CreateFakeQuotes(company, 1, daysToSkip).ToList();
+
+            company.Quotes = fakequotes.Cast<Quote>().ToList();
+
+            _companyService.Add(company);
+            _quoteService.AddRange(fakequotes);
+
+            // Act
+            var quotesCountBefore = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
+            _marketService.UpdateAllCompaniesWithLatestQuotesAsync().Wait();
+            var quotesCountAfter = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
+
+            // Assert
+            Assert.IsTrue(quotesCountAfter == daysToSkip + 1);
+        }
+
+        [TestMethod]
+        public void UpdateAllCompaniesWithLatestQuotesAsync_WithValidCompanyIdAndQuotes_Updates3MonthQuotesForCompany2()
+        {
+            // Arrange
+            var company = FakeCompaniesBuilder.CreateFakeCompanyAAPL();
+            company.RetrieveQuotesFlag = true;
+
+            var daysToSkip = DaysUntil(DateTime.Now.AddMonths(-3));
+            var fakequotes = FakeQuotesBuilder.CreateFakeQuotes(company, 1, daysToSkip).ToList();
+
+            company.Quotes = fakequotes.Cast<Quote>().ToList();
+
+            _companyService.Add(company);
+            _quoteService.AddRange(fakequotes);
+
+            // Act
+            var quotesCountBefore = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
+            _marketService.UpdateAllCompaniesWithLatestQuotesAsync().Wait();
+            var quotesCountAfter = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
+
+            // Assert
+            Assert.IsTrue(quotesCountAfter == daysToSkip + 1);
+        }
+
+        [TestMethod]
+        public void UpdateAllCompaniesWithLatestQuotesAsync_WithValidCompanyIdAndQuotes_Updates3MonthQuotesForCompany3()
+        {
+            // Arrange
+            var company = FakeCompaniesBuilder.CreateFakeCompanyAAPL();
+            company.RetrieveQuotesFlag = true;
+
+            var daysToSkip = DaysUntil(DateTime.Now.AddMonths(-3)) - 1;
+            var fakequotes = FakeQuotesBuilder.CreateFakeQuotes(company, 1, daysToSkip).ToList();
+
+            company.Quotes = fakequotes.Cast<Quote>().ToList();
+
+            _companyService.Add(company);
+            _quoteService.AddRange(fakequotes);
+
+            // Act
+            var quotesCountBefore = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
+            _marketService.UpdateAllCompaniesWithLatestQuotesAsync().Wait();
+            var quotesCountAfter = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
+
+            // Assert
+            Assert.IsTrue(quotesCountAfter == daysToSkip + 1);
+        }
+
+        [TestMethod]
+        public void UpdateAllCompaniesWithLatestQuotesAsync_WithValidCompanyIdAndQuotes_Updates1MonthQuotesForCompany1()
+        {
+            // Arrange
+            var company = FakeCompaniesBuilder.CreateFakeCompanyAAPL();
+            company.RetrieveQuotesFlag = true;
+
+            var daysToSkip = DaysUntil(DateTime.Now.AddMonths(-1)) + 1;
+            var fakequotes = FakeQuotesBuilder.CreateFakeQuotes(company, 1, daysToSkip).ToList();
+
+            company.Quotes = fakequotes.Cast<Quote>().ToList();
+
+            _companyService.Add(company);
+            _quoteService.AddRange(fakequotes);
+
+            // Act
+            var quotesCountBefore = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
+            _marketService.UpdateAllCompaniesWithLatestQuotesAsync().Wait();
+            var quotesCountAfter = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
+
+            // Assert
+            Assert.IsTrue(quotesCountAfter == daysToSkip + 1);
+        }
+
+        [TestMethod]
+        public void UpdateAllCompaniesWithLatestQuotesAsync_WithValidCompanyIdAndQuotes_Updates1MonthQuotesForCompany2()
+        {
+            // Arrange
+            var company = FakeCompaniesBuilder.CreateFakeCompanyAAPL();
+            company.RetrieveQuotesFlag = true;
+
+            var daysToSkip = DaysUntil(DateTime.Now.AddMonths(-1));
+            var fakequotes = FakeQuotesBuilder.CreateFakeQuotes(company, 1, daysToSkip).ToList();
+
+            company.Quotes = fakequotes.Cast<Quote>().ToList();
+
+            _companyService.Add(company);
+            _quoteService.AddRange(fakequotes);
+
+            // Act
+            var quotesCountBefore = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
+            _marketService.UpdateAllCompaniesWithLatestQuotesAsync().Wait();
+            var quotesCountAfter = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
+
+            // Assert
+            Assert.IsTrue(quotesCountAfter == daysToSkip + 1);
+        }
+
+        [TestMethod]
+        public void UpdateAllCompaniesWithLatestQuotesAsync_WithValidCompanyIdAndQuotes_Updates1MonthQuotesForCompany3()
+        {
+            // Arrange
+            var company = FakeCompaniesBuilder.CreateFakeCompanyAAPL();
+            company.RetrieveQuotesFlag = true;
+
+            var daysToSkip = DaysUntil(DateTime.Now.AddMonths(-1)) - 1;
+            var fakequotes = FakeQuotesBuilder.CreateFakeQuotes(company, 1, daysToSkip).ToList();
+
+            company.Quotes = fakequotes.Cast<Quote>().ToList();
+
+            _companyService.Add(company);
+            _quoteService.AddRange(fakequotes);
+
+            // Act
+            var quotesCountBefore = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
+            _marketService.UpdateAllCompaniesWithLatestQuotesAsync().Wait();
+            var quotesCountAfter = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
+
+            // Assert
+            Assert.IsTrue(quotesCountAfter == daysToSkip + 1);
+        }
+
+        [TestMethod]
+        public void UpdateAllCompaniesWithLatestQuotesAsync_WithValidCompanyIdAndQuotes_Updates5DaysQuotesForCompany1()
+        {
+            // Arrange
+            var company = FakeCompaniesBuilder.CreateFakeCompanyAAPL();
+            company.RetrieveQuotesFlag = true;
+
+            var daysToSkip = DaysUntil(DateTime.Now.AddDays(-5)) + 1;
+            var fakequotes = FakeQuotesBuilder.CreateFakeQuotes(company, 1, daysToSkip).ToList();
+
+            company.Quotes = fakequotes.Cast<Quote>().ToList();
+
+            _companyService.Add(company);
+            _quoteService.AddRange(fakequotes);
+
+            // Act
+            var quotesCountBefore = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
+            _marketService.UpdateAllCompaniesWithLatestQuotesAsync().Wait();
+            var quotesCountAfter = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
+
+            // Assert
+            Assert.IsTrue(quotesCountAfter == daysToSkip + 1);
+        }
+
+        [TestMethod]
+        public void UpdateAllCompaniesWithLatestQuotesAsync_WithValidCompanyIdAndQuotes_Updates5DaysQuotesForCompany2()
+        {
+            // Arrange
+            var company = FakeCompaniesBuilder.CreateFakeCompanyAAPL();
+            company.RetrieveQuotesFlag = true;
+
+            var daysToSkip = DaysUntil(DateTime.Now.AddDays(-5));
+            var fakequotes = FakeQuotesBuilder.CreateFakeQuotes(company, 1, daysToSkip).ToList();
+
+            company.Quotes = fakequotes.Cast<Quote>().ToList();
+
+            _companyService.Add(company);
+            _quoteService.AddRange(fakequotes);
+
+            // Act
+            var quotesCountBefore = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
+            _marketService.UpdateAllCompaniesWithLatestQuotesAsync().Wait();
+            var quotesCountAfter = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
+
+            // Assert
+            Assert.IsTrue(quotesCountAfter == daysToSkip + 1);
+        }
+
+        [TestMethod]
+        public void UpdateAllCompaniesWithLatestQuotesAsync_WithValidCompanyIdAndQuotes_Updates5DaysQuotesForCompany3()
+        {
+            // Arrange
+            var company = FakeCompaniesBuilder.CreateFakeCompanyAAPL();
+            company.RetrieveQuotesFlag = true;
+
+            var daysToSkip = DaysUntil(DateTime.Now.AddDays(-5)) - 1;
+            var fakequotes = FakeQuotesBuilder.CreateFakeQuotes(company, 1, daysToSkip).ToList();
+
+            company.Quotes = fakequotes.Cast<Quote>().ToList();
+
+            _companyService.Add(company);
+            _quoteService.AddRange(fakequotes);
+
+            // Act
+            var quotesCountBefore = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
+            _marketService.UpdateAllCompaniesWithLatestQuotesAsync().Wait();
+            var quotesCountAfter = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
+
+            // Assert
+            Assert.IsTrue(quotesCountAfter == daysToSkip + 1);
+        }
+
+        [TestMethod]
+        public void UpdateAllCompaniesWithLatestQuotesAsync_WithValidCompanyIdAndQuotes_Updates1DaysQuotesForCompany1()
+        {
+            // Arrange
+            var company = FakeCompaniesBuilder.CreateFakeCompanyAAPL();
+            company.RetrieveQuotesFlag = true;
+
+            var daysToSkip = DaysUntil(DateTime.Now.AddDays(-1)) + 1;
+            var fakequotes = FakeQuotesBuilder.CreateFakeQuotes(company, 1, daysToSkip).ToList();
+
+            company.Quotes = fakequotes.Cast<Quote>().ToList();
+
+            _companyService.Add(company);
+            _quoteService.AddRange(fakequotes);
+
+            // Act
+            var quotesCountBefore = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
+            _marketService.UpdateAllCompaniesWithLatestQuotesAsync().Wait();
+            var quotesCountAfter = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
+
+            // Assert
+            Assert.IsTrue(quotesCountAfter == daysToSkip + 1);
+        }
+
+        [TestMethod]
+        public void UpdateAllCompaniesWithLatestQuotesAsync_WithValidCompanyIdAndQuotes_Updates1DaysQuotesForCompany2()
+        {
+            // Arrange
+            var company = FakeCompaniesBuilder.CreateFakeCompanyAAPL();
+            company.RetrieveQuotesFlag = true;
+
+            var daysToSkip = DaysUntil(DateTime.Now.AddDays(-1));
+            var fakequotes = FakeQuotesBuilder.CreateFakeQuotes(company, 1, daysToSkip).ToList();
+
+            company.Quotes = fakequotes.Cast<Quote>().ToList();
+
+            _companyService.Add(company);
+            _quoteService.AddRange(fakequotes);
+
+            // Act
+            var quotesCountBefore = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
+            _marketService.UpdateAllCompaniesWithLatestQuotesAsync().Wait();
+            var quotesCountAfter = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
+
+            // Assert
+            Assert.IsTrue(quotesCountAfter == daysToSkip + 1);
+        }
+
+        [TestMethod]
+        public void UpdateAllCompaniesWithLatestQuotesAsync_WithValidCompanyIdAndQuotes_Updates1DaysQuotesForCompany3()
+        {
+            // Arrange
+            var company = FakeCompaniesBuilder.CreateFakeCompanyAAPL();
+            company.RetrieveQuotesFlag = true;
+
+            var daysToSkip = DaysUntil(DateTime.Now.AddDays(-1)) - 1;
+            var fakequotes = FakeQuotesBuilder.CreateFakeQuotes(company, 1, daysToSkip).ToList();
+
+            company.Quotes = fakequotes.Cast<Quote>().ToList();
+
+            _companyService.Add(company);
+            _quoteService.AddRange(fakequotes);
+
+            // Act
+            var quotesCountBefore = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
+            _marketService.UpdateAllCompaniesWithLatestQuotesAsync().Wait();
+            var quotesCountAfter = _quoteService.GetQuotes().Count(q => q.CompanyId == company.Id);
+
+            // Assert
+            Assert.IsTrue(quotesCountAfter == daysToSkip + 1);
         }
 
         #endregion

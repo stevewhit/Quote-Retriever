@@ -31,7 +31,7 @@ namespace QR.Business.Services
 
     public class MarketService<C, Q> : IMarketService<C, Q> where C : Company where Q : Quote
     {
-        private const int MAX_MONTHS_TO_DOWNLOAD = 1;
+        private const int MAX_MONTHS_TO_DOWNLOAD = 24;
 
         private readonly ICompanyService<C> _companyService;
         private readonly IQuoteService<Q> _quoteService;
@@ -77,14 +77,30 @@ namespace QR.Business.Services
                 throw new ObjectDisposedException("MarketService", "The service has been disposed.");
 
             // Asyncronously download details for each company
-            var downloadTasks = _companyService.GetCompanies().Where(c => c.DownloadDetailsFlag).ToList().Select(c => GetCompanyDetailsAsync(c));
-            var updatedCompanies = await Task.WhenAll(downloadTasks);
-            
-            updatedCompanies.ForEach(c =>
+            var runningTasks = _companyService.GetCompanies().Where(c => c.DownloadDetailsFlag).ToList().Select(c => GetCompanyDetailsAsync(c)).ToList();
+            var taskExceptions = new List<Exception>();
+
+            while (runningTasks.Any())
             {
-                c.DownloadDetailsFlag = false;
-                _companyService.Update(c);
-            });
+                try
+                {
+                    var completedTask = await Task.WhenAny(runningTasks);
+                    runningTasks.Remove(completedTask);
+
+                    // Process any completed task by updating the existing company with new data.
+                    var company = await completedTask;
+                    company.DownloadDetailsFlag = false;
+
+                    _companyService.Update(company);
+                }
+                catch (Exception e)
+                {
+                    taskExceptions.Add(e);
+                }
+            }
+
+            if (taskExceptions.Any())
+                throw new AggregateException(taskExceptions);       
         }
 
         /// <summary>
@@ -131,19 +147,30 @@ namespace QR.Business.Services
             if (_isDisposed)
                 throw new ObjectDisposedException("MarketService", "The service has been disposed.");
 
-            // Start the async downloads for each company and add the new
-            // quote data as the tasks finish.
-            var downloadTasks = _companyService.GetCompanies().Where(c => c.RetrieveQuotesFlag).ToList().Select(c => GetLatestQuotesForCompanyAsync(c)).ToList();
-            while (downloadTasks.Count() > 0)
+            // Asyncronously download stock data for each company.
+            var runningTasks = _companyService.GetCompanies().Where(c => c.RetrieveQuotesFlag).ToList().Select(c => GetLatestQuotesForCompanyAsync(c)).ToList();
+            var taskExceptions = new List<Exception>();
+
+            while (runningTasks.Any())
             {
-                var completedTask = await Task.WhenAny(downloadTasks);
-
-                downloadTasks.Remove(completedTask);
-                
-                _quoteService.AddRange(await completedTask);
+                try
+                {
+                    var completedTask = await Task.WhenAny(runningTasks);
+                    runningTasks.Remove(completedTask);
+                    
+                    // Process any completed task by adding the new quote data
+                    _quoteService.AddRange(await completedTask);
+                }
+                catch(Exception e)
+                {
+                    taskExceptions.Add(e);
+                }
             }
-        }
 
+            if (taskExceptions.Any())
+                throw new AggregateException(taskExceptions);
+        }
+        
         /// <summary>
         /// Asycronously downloads and returns quotes for a given company, up to a max range. 
         /// </summary>

@@ -15,24 +15,42 @@ namespace QR.App
             kernel.Load(Assembly.GetExecutingAssembly());
 
             var marketService = kernel.Get<IMarketService<Company, Quote>>();
+            var log = kernel.Get<ILog>();
 
             try
             {
                 marketService.UpdateAllCompanyDetailsAsync().Wait();
-                marketService.UpdateAllCompaniesWithLatestQuotesAsync().Wait();
             }
-            catch (Exception e)
+            catch (AggregateException e)
             {
-                //throw e;
-                kernel.Get<ILog>().Error("An error occurred when updating companies with the latest quotes..", e);
-            }
-            finally
-            {
-                marketService.Dispose();
-                kernel.Dispose();
+                LogRecursive(log, e, "Error occured downloading stock details");
             }
 
-            Console.ReadKey();
+            try
+            {
+                marketService.UpdateAllCompaniesWithLatestQuotesAsync().Wait();
+            }
+            catch (AggregateException e)
+            {
+                LogRecursive(log, e, "Error occured downloading stock data");
+            }
+            
+            marketService.Dispose();
+            kernel.Dispose();
+        }
+
+        /// <summary>
+        /// Logs the inner exceptions of an AggregateException separately.
+        /// </summary>
+        private static void LogRecursive(ILog log, AggregateException e, string message)
+        {
+            foreach (var innerException in e.InnerExceptions)
+            {
+                if (innerException is AggregateException)
+                    LogRecursive(log, innerException as AggregateException, message);
+                else
+                    log.Error($"{message}", innerException);
+            }
         }
     }
 }
