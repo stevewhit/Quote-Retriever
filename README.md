@@ -18,23 +18,21 @@ npm install
 ```
 
 4. Update application config file with API token.
-```bash 
+```config 
 <!-- Remove -->
 <connectionStrings configSource="secretConnectionStrings.config" />
 
 <!-- Add -->
 <connectionStrings>
-	<appSettings>
-	  <add key="IEXCloudToken" value="[YOUR_API_TOKEN_HERE]" />
-	  <add key="IEXCloudTokenTest" value="[YOUR_TEST_API_TOKEN_HERE]"/>
-	</appSettings>
+  <appSettings>
+    <add key="IEXCloudToken" value="[YOUR_API_TOKEN_HERE]" />
+    <add key="IEXCloudTokenTest" value="[YOUR_TEST_API_TOKEN_HERE]"/>
+  </appSettings>
 <connectionStrings/>
 ```
 
 ## Attribution to IEX
-<a href="https://iexcloud.io"></a>
-
-For quote retrieval, the <a href="https://iexcloud.io">IEXCloud.io API</a> is used.
+For EOD stock data, [IEXCloud.io](https://iexcloud.io) is used.
 
 Attribution is required of all users of iexcloud. Put “Powered by IEX Cloud” somewhere on your site or app, and link that text to https://iexcloud.io. Alternately, the attribution link can be included in your terms of service.
 
