@@ -17,8 +17,10 @@ git clone https://github.com/stevewhit/StockMarket.Generic
 npm install
 ```
 
-4. Update application config file with API token.
+4. Update application config file with your API token.
 ```config 
+** QR.App -> App.config **
+
 <!-- Remove -->
 <connectionStrings configSource="secretConnectionStrings.config" />
 
