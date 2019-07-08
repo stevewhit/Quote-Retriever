@@ -1,10 +1,16 @@
-# Quote-Retriever
+# Quote-Retriever ![GitHub release](https://img.shields.io/github/release/stevewhit/quote-retriever.svg?color=green&style=popout)
 Quote Retriever is a C# .NET desktop application for downloading and storing the latest End-Of-Day (EOD) market data for requested companies.
+
+## Dependencies
+There are two project dependencies to consider when installing & running this project. All three projects should reside in the same root folder in order to build properly.
+
+1. [Framework.Generic](https://github.com/stevewhit/Framework.Generic)
+1. [StockMarket.Generic](https://github.com/stevewhit/StockMarket.Generic)
 
 ## Installation
 1. Create a free account with <a href="https://iexcloud.io">IEXCloud.io</a> and get a free API token.
 
-2. Clone the repository and all dependencies to one root folder.
+2. Clone the repository and all [dependencies](#dependencies) to a single root folder.
 
 ```bash
 git clone https://github.com/stevewhit/Quote-Retriever
