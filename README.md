@@ -6,19 +6,19 @@ Quote Retriever is a C# .NET desktop application for downloading and storing the
 
 2. Clone the repository and all dependencies
 
-'''bash
+```bash
 git clone https://github.com/stevewhit/Quote-Retriever
 git clone https://github.com/stevewhit/Framework.Generic
 git clone https://github.com/stevewhit/StockMarket.Generic
-'''
+```
 
 3. Install NPM packages
-'''bash
+```bash
 npm install
-'''
+```
 
 4. Update application config file with API token.
-'''bash 
+```bash 
 <!-- Remove -->
 <connectionStrings configSource="secretConnectionStrings.config" />
 
@@ -29,7 +29,7 @@ npm install
 	  <add key="IEXCloudTokenTest" value="[YOUR_TEST_API_TOKEN_HERE]"/>
 	</appSettings>
 <connectionStrings/>
-'''
+```
 
 ## Attribution to IEX
 <a href="https://iexcloud.io"></a>
