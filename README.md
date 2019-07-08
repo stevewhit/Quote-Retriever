@@ -4,7 +4,7 @@ Quote Retriever is a C# .NET desktop application for downloading and storing the
 ## Installation
 1. Create a free account with <a href="https://iexcloud.io">IEXCloud.io</a> and get a free API token.
 
-2. Clone the repository and all dependencies
+2. Clone the repository and all dependencies to one root folder.
 
 ```bash
 git clone https://github.com/stevewhit/Quote-Retriever
@@ -34,7 +34,7 @@ npm install
 ```
 
 ## Attribution to IEX
-For EOD stock data, this application is [Powered by IEX Cloud](https://iexcloud.io).
+Stock market and company data for this application is [Powered by IEX Cloud](https://iexcloud.io).
 
 View the [IEXCloud.io API](https://iexcloud.io/docs/api/#introduction).
 
