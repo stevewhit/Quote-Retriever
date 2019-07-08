@@ -32,12 +32,9 @@ npm install
 ```
 
 ## Attribution to IEX
-For EOD stock data, [IEXCloud.io](https://iexcloud.io) is used.
+For EOD stock data, this application is [Powered by IEX Cloud](https://iexcloud.io).
 
-Attribution is required of all users of iexcloud. Put “Powered by IEX Cloud” somewhere on your site or app, and link that text to https://iexcloud.io. Alternately, the attribution link can be included in your terms of service.
-
-### IEXCloud.io API
-https://iexcloud.io/docs/api/#introduction
+View the [IEXCloud.io API](https://iexcloud.io/docs/api/#introduction).
 
 ## Lincense
 Distributed under the MIT License. See [MIT License](https://choosealicense.com/licenses/mit/) for more information.
