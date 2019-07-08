@@ -6,7 +6,7 @@ Quote Retriever is a C# .NET desktop application for downloading and storing the
 
 2. Clone the repository and all dependencies
 
-''' bash
+'''bash
 git clone https://github.com/stevewhit/Quote-Retriever
 git clone https://github.com/stevewhit/Framework.Generic
 git clone https://github.com/stevewhit/StockMarket.Generic
@@ -18,7 +18,7 @@ npm install
 '''
 
 4. Update application config file with API token.
-'''Git Config 
+'''bash 
 <!-- Remove -->
 <connectionStrings configSource="secretConnectionStrings.config" />
 
