@@ -13,12 +13,12 @@ git clone https://github.com/stevewhit/StockMarket.Generic
 '''
 
 3. Install NPM packages
-''' bash
+'''bash
 npm install
 '''
 
 4. Update application config file with API token.
-''' Git Config 
+'''Git Config 
 <!-- Remove -->
 <connectionStrings configSource="secretConnectionStrings.config" />
 
@@ -32,7 +32,7 @@ npm install
 '''
 
 ## Attribution to IEX
-<a href="https://iexcloud.io">Powered by IEX Cloud</a>
+<a href="https://iexcloud.io"></a>
 
 For quote retrieval, the <a href="https://iexcloud.io">IEXCloud.io API</a> is used.
 
