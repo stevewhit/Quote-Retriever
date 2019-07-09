@@ -1,6 +1,12 @@
 # Quote-Retriever ![GitHub release](https://img.shields.io/github/release/stevewhit/quote-retriever.svg?color=green&style=popout)
 Quote Retriever is a C# .NET desktop application for downloading and storing the latest End-Of-Day (EOD) market data for requested companies.
 
+## Requirements
+- [x] Download EOD data for individual stocks
+- [ ] Download EOD data for index funds
+- [x] Download Company information for pre-defined companies
+- [x] Log exceptions individually (don't crash all downloads because one failed)
+
 ## Dependencies
 There are two project dependencies to consider when installing & running this project. All three projects should reside in the same root folder in order to build properly.
 
