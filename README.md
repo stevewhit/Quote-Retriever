@@ -39,7 +39,9 @@ npm install
 <connectionStrings/>
 ```
 
-5. Follow installation steps for [StockMarket.Generic](https://github.com/stevewhit/StockMarket.Generic#Installation)
+5. Follow installation steps for [StockMarket.Generic](https://github.com/stevewhit/StockMarket.Generic)
+
+6. Follow installation steps for [Framework.Generic](https://github.com/stevewhit/Framework.Generic)
 
 ## Attribution to IEX
 Stock market and company data for this application is [Powered by IEX Cloud](https://iexcloud.io).
