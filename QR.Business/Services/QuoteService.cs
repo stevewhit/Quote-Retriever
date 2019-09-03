@@ -4,12 +4,12 @@ using StockMarket.Generic.Services;
 
 namespace QR.Business.Services
 {
-    public interface IQuoteService<T> : IBaseQuoteService<T> where T : Quote
+    public interface IQuoteService<T> : IQuoteServiceBase<T> where T : Quote
     {
 
     }
 
-    public class QuoteService<T> : BaseQuoteService<T>, IQuoteService<T> where T : Quote
+    public class QuoteService<T> : QuoteServiceBase<T>, IQuoteService<T> where T : Quote
     {
         public QuoteService(IEfRepository<T> repository)
             : base(repository)
