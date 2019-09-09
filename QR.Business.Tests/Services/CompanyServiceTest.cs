@@ -4,7 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QR.Business.Services;
 using System.Diagnostics.CodeAnalysis;
 using System;
-using StockMarket.DataModel.Test.Builders;
+using StockMarket.DataModel.Test.Builders.Objects;
 
 namespace QR.Business.Tests.Services
 {

@@ -9,6 +9,7 @@ using StockMarket.Generic.Test.Builders;
 using StockMarket.Generic.Downloaders;
 using StockMarket.DataModel.Test.Builders;
 using StockMarket.DataModel;
+using StockMarket.DataModel.Test.Builders.Objects;
 
 namespace QR.Business.Tests.Services
 {
