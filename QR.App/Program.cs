@@ -24,7 +24,7 @@ namespace QR.App
             {
                 LogRecursive(kernel.Get<ILog>(), e, "Error occured downloading stock details");
             }
-
+            
             try
             {
                 marketService.UpdateAllCompaniesWithLatestQuotesAsync().Wait();

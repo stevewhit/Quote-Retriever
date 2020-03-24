@@ -14,7 +14,7 @@ namespace QR.App
     {
         public override void Load()
         {
-            var token = ConfigurationManager.AppSettings["IEXCloudToken"];
+            var token = ConfigurationManager.AppSettings["IEXCloudTokenTest"];
             
             var context = new EfContext(new SMAContext());
 
