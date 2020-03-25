@@ -5,5 +5,7 @@
 	<RemoveDir Directories="$(TargetDir)" /> <!-- bin -->
 	<Message Text="       * Deleting obj: $(ProjectDir)$(BaseIntermediateOutputPath)" Importance="high"/>
     <RemoveDir Directories="$(ProjectDir)$(BaseIntermediateOutputPath)" /> <!-- obj -->
+	<Message Text="       * Deleting TestResults: $(ProjectDir)..\TestResults" Importance="high"/>
+    <RemoveDir Directories="$(ProjectDir)..\TestResults" />  <!-- TestResults -->
   </Target>
 </Project>
