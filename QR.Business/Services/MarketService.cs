@@ -165,7 +165,7 @@ namespace QR.Business.Services
                         runningTasks.Add(GetDayQuotesForCompanyAsync(company.Symbol, lastDayQuoteDate));
                 }
 
-                // If market is closed
+                // If it's currently AFTER market closed
                 else if (currentDate.TimeOfDay > _marketClose)
                 {
                     // If there is missing MINUTE data from today
@@ -177,7 +177,7 @@ namespace QR.Business.Services
                         runningTasks.Add(GetDayQuotesForCompanyAsync(company.Symbol, lastDayQuoteDate));
                 }
 
-                // If it's current BEFORE the market opens
+                // If it's currently BEFORE the market opens
                 else if (currentDate.TimeOfDay < _marketOpen)
                 {
                     // If yesterday's DAY data is missing

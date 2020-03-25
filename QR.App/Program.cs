@@ -14,24 +14,29 @@ namespace QR.App
             IKernel kernel = new StandardKernel();
             kernel.Load(Assembly.GetExecutingAssembly());
 
+            var log = kernel.Get<ILog>();
             var marketService = kernel.Get<IMarketService<Company, Quote>>();
 
             try
             {
+                log.Info("Starting: Downloading of company details.");
                 marketService.UpdateAllCompanyDetailsAsync().Wait();
+                log.Info("Finished: Downloading of company details.");
             }
             catch (AggregateException e)
             {
-                LogRecursive(kernel.Get<ILog>(), e, "Error occured downloading stock details");
+                LogRecursive(log, e, "Error occured downloading stock details");
             }
             
             try
             {
+                log.Info("Starting: Downloading of day and minute quotes.");
                 marketService.UpdateAllCompaniesWithLatestQuotesAsync().Wait();
+                log.Info("Finished: Downloading of day and minute quotes.");
             }
             catch (AggregateException e)
             {
-                LogRecursive(kernel.Get<ILog>(), e, "Error occured downloading stock data");
+                LogRecursive(log, e, "Error occured downloading stock data");
             }
             
             marketService.Dispose();
