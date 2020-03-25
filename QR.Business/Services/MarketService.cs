@@ -156,8 +156,8 @@ namespace QR.Business.Services
                 // If market is open
                 if (currentDate.TimeOfDay >= _marketOpen && currentDate.TimeOfDay <= _marketClose)
                 {
-                    // If it's been at least 1 minute since the last stored MINUTE quote
-                    if (lastMinuteQuoteDate.TimeOfDay.Add(new TimeSpan(0, 1, 0)) < SystemTime.Now().TimeOfDay)
+                    // If there isn't any minute data for today, or if it's been at least 1 minute since the last stored MINUTE quote
+                    if (lastMinuteQuoteDate.Date < currentDate.Date || lastMinuteQuoteDate.TimeOfDay.Add(new TimeSpan(0, 1, 0)) < SystemTime.Now().TimeOfDay)
                         runningTasks.Add(GetMinuteQuotesForCompanyAsync(company.Symbol));
 
                     // If it's been at least 2 days since the last stored DAY quote
