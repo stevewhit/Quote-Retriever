@@ -36,6 +36,7 @@ namespace QR.Business.Tests.Services
         public void Initialize()
         {
             SystemTime.ResetDateTime();
+            FakeQuotesBuilder.CreatesValidQuotes = true;
 
             var mockContext = new MockEfContext(new[] { typeof(TestQuote), typeof(TestCompany) } );
             var quoteRepository = new EfRepository<TestQuote>(mockContext.Object);
@@ -621,7 +622,191 @@ namespace QR.Business.Tests.Services
             Assert.IsTrue(newDayQuotes.Count() == 1);
             Assert.IsTrue(dayQuotesAfter.Count() == existingDayQuoteDates.Count() + 1);
         }
-        
+
+        [TestMethod]
+        public void UpdateAllCompaniesWithLatestQuotesAsync_WithInvalidExistingQuoteAndInvalidNewQuote_DoesntUpdateQuote()
+        {
+            // Arrange
+            var todayDuringMarketOpen = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 12, 0, 0);
+
+            var company = FakeCompaniesBuilder.CreateFakeCompanyAAPL();
+            company.RetrieveQuotesFlag = true;
+
+            var companyQuotes = FakeQuotesBuilder.CreateFakeDayMinuteQuotes(company, 0, todayDuringMarketOpen.TimeOfDay).ToList();
+
+            // Invalidate one of the quotes
+            var quoteBeforeUpdate = companyQuotes.First(q => q.QuoteType == QuoteTypeEnum.Minute);
+            var highBefore = quoteBeforeUpdate.High;
+            var lowBefore = quoteBeforeUpdate.Low;
+            var openBefore = quoteBeforeUpdate.Open;
+            var closeBefore = quoteBeforeUpdate.Close;
+            var volumeBefore = quoteBeforeUpdate.Volume;
+
+            companyQuotes.Remove(quoteBeforeUpdate);
+            quoteBeforeUpdate.IsValid = false;
+            companyQuotes.Add(quoteBeforeUpdate);
+
+            company.Quotes = companyQuotes.ToList<Quote>();
+            
+            _quoteService.AddRange(companyQuotes);
+            _companyService.Add(company);
+
+            SystemTime.SetDateTime(todayDuringMarketOpen.AddHours(2));
+
+            // Update quotes builder so that is creates invalid quotes.
+            FakeQuotesBuilder.CreatesValidQuotes = false;
+
+            // Act
+            _marketService.UpdateAllCompaniesWithLatestQuotesAsync().Wait();
+            
+            var updatedQuote = _quoteService.FindQuote(quoteBeforeUpdate.Id);
+
+            // Assert
+            Assert.IsTrue(updatedQuote.High == highBefore);
+            Assert.IsTrue(updatedQuote.Low == lowBefore);
+            Assert.IsTrue(updatedQuote.Open == openBefore);
+            Assert.IsTrue(updatedQuote.Close == closeBefore);
+            Assert.IsTrue(updatedQuote.Volume == volumeBefore);
+        }
+
+        [TestMethod]
+        public void UpdateAllCompaniesWithLatestQuotesAsync_WithInvalidExistingQuoteAndValidNewQuote_UpdatesQuote()
+        {
+            // Arrange
+            var todayDuringMarketOpen = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 12, 0, 0);
+
+            var company = FakeCompaniesBuilder.CreateFakeCompanyAAPL();
+            company.RetrieveQuotesFlag = true;
+
+            var companyQuotes = FakeQuotesBuilder.CreateFakeDayMinuteQuotes(company, 0, todayDuringMarketOpen.TimeOfDay).ToList();
+
+            // Invalidate one of the quotes
+            var quoteBeforeUpdate = companyQuotes.First(q => q.QuoteType == QuoteTypeEnum.Minute);
+            var highBefore = quoteBeforeUpdate.High;
+            var lowBefore = quoteBeforeUpdate.Low;
+            var openBefore = quoteBeforeUpdate.Open;
+            var closeBefore = quoteBeforeUpdate.Close;
+            var volumeBefore = quoteBeforeUpdate.Volume;
+            
+            companyQuotes.Remove(quoteBeforeUpdate);
+            quoteBeforeUpdate.IsValid = false;
+            companyQuotes.Add(quoteBeforeUpdate);
+
+            company.Quotes = companyQuotes.ToList<Quote>();
+
+            _quoteService.AddRange(companyQuotes);
+            _companyService.Add(company);
+
+            SystemTime.SetDateTime(todayDuringMarketOpen.AddHours(2));
+
+            // Update quotes builder so that is creates invalid quotes.
+            FakeQuotesBuilder.CreatesValidQuotes = true;
+
+            // Act
+            _marketService.UpdateAllCompaniesWithLatestQuotesAsync().Wait();
+
+            var updatedQuote = _quoteService.FindQuote(quoteBeforeUpdate.Id);
+
+            // Assert
+            Assert.IsTrue(updatedQuote.High != highBefore);
+            Assert.IsTrue(updatedQuote.Low != lowBefore);
+            Assert.IsTrue(updatedQuote.Open != openBefore);
+            Assert.IsTrue(updatedQuote.Close != closeBefore);
+            Assert.IsTrue(updatedQuote.Volume != volumeBefore);
+        }
+
+        [TestMethod]
+        public void UpdateAllCompaniesWithLatestQuotesAsync_WithValidExistingQuoteAndInvalidNewQuote_DoesntUpdateQuote()
+        {
+            // Arrange
+            var todayDuringMarketOpen = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 12, 0, 0);
+
+            var company = FakeCompaniesBuilder.CreateFakeCompanyAAPL();
+            company.RetrieveQuotesFlag = true;
+
+            var companyQuotes = FakeQuotesBuilder.CreateFakeDayMinuteQuotes(company, 0, todayDuringMarketOpen.TimeOfDay).ToList();
+
+            // Invalidate one of the quotes
+            var quoteBeforeUpdate = companyQuotes.First(q => q.QuoteType == QuoteTypeEnum.Minute);
+            var highBefore = quoteBeforeUpdate.High;
+            var lowBefore = quoteBeforeUpdate.Low;
+            var openBefore = quoteBeforeUpdate.Open;
+            var closeBefore = quoteBeforeUpdate.Close;
+            var volumeBefore = quoteBeforeUpdate.Volume;
+
+            companyQuotes.Remove(quoteBeforeUpdate);
+            quoteBeforeUpdate.IsValid = true;
+            companyQuotes.Add(quoteBeforeUpdate);
+
+            company.Quotes = companyQuotes.ToList<Quote>();
+
+            _quoteService.AddRange(companyQuotes);
+            _companyService.Add(company);
+
+            SystemTime.SetDateTime(todayDuringMarketOpen.AddHours(2));
+
+            // Update quotes builder so that is creates invalid quotes.
+            FakeQuotesBuilder.CreatesValidQuotes = false;
+
+            // Act
+            _marketService.UpdateAllCompaniesWithLatestQuotesAsync().Wait();
+
+            var updatedQuote = _quoteService.FindQuote(quoteBeforeUpdate.Id);
+
+            // Assert
+            Assert.IsTrue(updatedQuote.High == highBefore);
+            Assert.IsTrue(updatedQuote.Low == lowBefore);
+            Assert.IsTrue(updatedQuote.Open == openBefore);
+            Assert.IsTrue(updatedQuote.Close == closeBefore);
+            Assert.IsTrue(updatedQuote.Volume == volumeBefore);
+        }
+
+        [TestMethod]
+        public void UpdateAllCompaniesWithLatestQuotesAsync_WithValidExistingQuoteAndValidNewQuote_DoesntUpdateQuote()
+        {
+            // Arrange
+            var todayDuringMarketOpen = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 12, 0, 0);
+
+            var company = FakeCompaniesBuilder.CreateFakeCompanyAAPL();
+            company.RetrieveQuotesFlag = true;
+
+            var companyQuotes = FakeQuotesBuilder.CreateFakeDayMinuteQuotes(company, 0, todayDuringMarketOpen.TimeOfDay).ToList();
+
+            // Invalidate one of the quotes
+            var quoteBeforeUpdate = companyQuotes.First(q => q.QuoteType == QuoteTypeEnum.Minute);
+            var highBefore = quoteBeforeUpdate.High;
+            var lowBefore = quoteBeforeUpdate.Low;
+            var openBefore = quoteBeforeUpdate.Open;
+            var closeBefore = quoteBeforeUpdate.Close;
+            var volumeBefore = quoteBeforeUpdate.Volume;
+
+            companyQuotes.Remove(quoteBeforeUpdate);
+            quoteBeforeUpdate.IsValid = true;
+            companyQuotes.Add(quoteBeforeUpdate);
+
+            company.Quotes = companyQuotes.ToList<Quote>();
+
+            _quoteService.AddRange(companyQuotes);
+            _companyService.Add(company);
+
+            SystemTime.SetDateTime(todayDuringMarketOpen.AddHours(2));
+
+            // Update quotes builder so that is creates invalid quotes.
+            FakeQuotesBuilder.CreatesValidQuotes = true;
+
+            // Act
+            _marketService.UpdateAllCompaniesWithLatestQuotesAsync().Wait();
+
+            var updatedQuote = _quoteService.FindQuote(quoteBeforeUpdate.Id);
+
+            // Assert
+            Assert.IsTrue(updatedQuote.High == highBefore);
+            Assert.IsTrue(updatedQuote.Low == lowBefore);
+            Assert.IsTrue(updatedQuote.Open == openBefore);
+            Assert.IsTrue(updatedQuote.Close == closeBefore);
+            Assert.IsTrue(updatedQuote.Volume == volumeBefore);
+        }
+
         #endregion
         #region Testing Task<IEnumerable<Q>> GetDayQuotesForCompanyAsync(string tickerSymbol, DateTime startDate)
 

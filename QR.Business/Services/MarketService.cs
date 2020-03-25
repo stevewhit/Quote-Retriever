@@ -196,11 +196,33 @@ namespace QR.Business.Services
                     var downloadedQuotes = await completedTask;
                     if (downloadedQuotes.Any())
                     {
-                        // Remove all duplicate quote date values from the recently downloaded quotes before adding.
-                        var existingCompanyQuoteDates = new HashSet<DateTime>(_quoteService.GetQuotes().ToList().Where(q => q.CompanyId == downloadedQuotes.First().CompanyId && q.TypeId == downloadedQuotes.First().TypeId).Select(q => q.Date));
-                        downloadedQuotes = downloadedQuotes.Where(q => !existingCompanyQuoteDates.Contains(q.Date));
+                        var firstDownloadedQuote = downloadedQuotes.First();
+                        var storedCompanyQuotes = _quoteService.GetQuotes().ToList().Where(q => q.CompanyId == firstDownloadedQuote.CompanyId && q.TypeId == firstDownloadedQuote.TypeId);
 
-                        _quoteService.AddRange(downloadedQuotes);
+                        // Hashsets of the quote dates to indicate which dates contain valid/invalid quotes.
+                        // Note: Use hashsets for better performance when identifying if a list item is contained in a separate list.
+                        var allStoredCompanyQuoteDates = new HashSet<DateTime>(storedCompanyQuotes.Select(q => q.Date));
+                        var invalidStoredCompanyQuoteDates = new HashSet<DateTime>(storedCompanyQuotes.Where(q => !q.IsValid).Select(q => q.Date));
+
+                        // Update any invalid stored quotes if the new downloaded quote is valid.
+                        var quotesToUpdate = downloadedQuotes.Where(dq => dq.IsValid && invalidStoredCompanyQuoteDates.Contains(dq.Date)).Select((downloadedQuote) =>
+                        {
+                            var storedQuoteToUpdate = storedCompanyQuotes.First(q => q.Date == downloadedQuote.Date);
+                            storedQuoteToUpdate.High = downloadedQuote.High;
+                            storedQuoteToUpdate.Low = downloadedQuote.Low;
+                            storedQuoteToUpdate.Open = downloadedQuote.Open;
+                            storedQuoteToUpdate.Close = downloadedQuote.Close;
+                            storedQuoteToUpdate.Volume = downloadedQuote.Volume;
+                            storedQuoteToUpdate.IsValid = true;
+
+                            return storedQuoteToUpdate;
+                        });
+
+                        _quoteService.UpdateRange(quotesToUpdate);
+
+                        // Add non-duplicate quotes
+                        var quotesToAdd = downloadedQuotes.Where(q => !allStoredCompanyQuoteDates.Contains(q.Date));
+                        _quoteService.AddRange(quotesToAdd);
                     }
                 }
                 catch(Exception e)
