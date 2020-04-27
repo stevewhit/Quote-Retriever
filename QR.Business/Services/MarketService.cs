@@ -150,9 +150,9 @@ namespace QR.Business.Services
             // download quotes for each range of time.
             foreach (var company in _companyService.GetCompanies().Where(c => c.RetrieveQuotesFlag))
             {
-                var lastMinuteQuoteDate = company.Quotes.Any() ? company.Quotes.Where(q => q.QuoteType == QuoteTypeEnum.Minute).Max(q => q.Date) : DateTime.MinValue.Date;
-                var lastDayQuoteDate = company.Quotes.Any() ? company.Quotes.Where(q => q.QuoteType == QuoteTypeEnum.Day).Max(q => q.Date) : SystemTime.Now().AddMonths(-1 * MAX_MONTHS_TO_DOWNLOAD).AddDays(-1).Date;
-                                
+                var lastMinuteQuoteDate = company.Quotes.Any(q => q.QuoteType == QuoteTypeEnum.Minute) ? company.Quotes.Where(q => q.QuoteType == QuoteTypeEnum.Minute).Max(q => q.Date) : DateTime.MinValue.Date;
+                var lastDayQuoteDate = company.Quotes.Any(q => q.QuoteType == QuoteTypeEnum.Day) ? company.Quotes.Where(q => q.QuoteType == QuoteTypeEnum.Day).Max(q => q.Date) : SystemTime.Now().AddMonths(-1 * MAX_MONTHS_TO_DOWNLOAD).AddDays(-1).Date;
+                         
                 // If market is open
                 if (currentDate.TimeOfDay >= _marketOpen && currentDate.TimeOfDay <= _marketClose)
                 {
