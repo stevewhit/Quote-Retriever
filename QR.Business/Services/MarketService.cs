@@ -150,7 +150,7 @@ namespace QR.Business.Services
             // download quotes for each range of time.
             foreach (var company in _companyService.GetCompanies().Where(c => c.RetrieveQuotesFlag))
             {
-                var lastMinuteQuoteDate = company.Quotes.Any(q => q.QuoteType == QuoteTypeEnum.Minute) ? company.Quotes.Where(q => q.QuoteType == QuoteTypeEnum.Minute).Max(q => q.Date) : DateTime.MinValue.Date;
+                var lastMinuteQuoteDate = company.Quotes.Any(q => q.QuoteType == QuoteTypeEnum.OneMinute) ? company.Quotes.Where(q => q.QuoteType == QuoteTypeEnum.OneMinute).Max(q => q.Date) : DateTime.MinValue.Date;
                 var lastDayQuoteDate = company.Quotes.Any(q => q.QuoteType == QuoteTypeEnum.Day) ? company.Quotes.Where(q => q.QuoteType == QuoteTypeEnum.Day).Max(q => q.Date) : SystemTime.Now().AddMonths(-1 * MAX_MONTHS_TO_DOWNLOAD).AddDays(-1).Date;
                          
                 // If market is open
@@ -196,8 +196,8 @@ namespace QR.Business.Services
                     var downloadedQuotes = await completedTask;
                     if (downloadedQuotes.Any())
                     {
-                        var firstDownloadedQuote = downloadedQuotes.First();
-                        var storedCompanyQuotes = _quoteService.GetQuotes().ToList().Where(q => q.CompanyId == firstDownloadedQuote.CompanyId && q.TypeId == firstDownloadedQuote.TypeId);
+                        var firstDownloadedQuote = downloadedQuotes.OrderBy(q => q.Date).First();
+                        var storedCompanyQuotes = _quoteService.GetQuotes().Where(q => q.CompanyId == firstDownloadedQuote.CompanyId && q.TypeId == firstDownloadedQuote.TypeId && q.Date >= firstDownloadedQuote.Date).ToList();
 
                         // Hashsets of the quote dates to indicate which dates contain valid/invalid quotes.
                         // Note: Use hashsets for better performance when identifying if a list item is contained in a separate list.

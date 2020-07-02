@@ -395,9 +395,9 @@ namespace QR.Business.Tests.Services
             // Act
             _marketService.UpdateAllCompaniesWithLatestQuotesAsync().Wait();
 
-            var maxInitialMinuteQuoteDate = companyQuotes.Where(q => q.TypeId == (int)QuoteTypeEnum.Minute).Select(cq => cq.Date).Max();
-            var minuteQuotesAfter = _quoteService.GetQuotes().Where(q => q.CompanyId == company.Id && q.TypeId == (int)QuoteTypeEnum.Minute).ToList();
-            var existingMinuteQuoteDates = new HashSet<DateTime>(companyQuotes.Where(q => q.TypeId == (int)QuoteTypeEnum.Minute).Select(q => q.Date));
+            var maxInitialMinuteQuoteDate = companyQuotes.Where(q => q.TypeId == (int)QuoteTypeEnum.OneMinute).Select(cq => cq.Date).Max();
+            var minuteQuotesAfter = _quoteService.GetQuotes().Where(q => q.CompanyId == company.Id && q.TypeId == (int)QuoteTypeEnum.OneMinute).ToList();
+            var existingMinuteQuoteDates = new HashSet<DateTime>(companyQuotes.Where(q => q.TypeId == (int)QuoteTypeEnum.OneMinute).Select(q => q.Date));
             var newMinuteQuotes = minuteQuotesAfter.Where(q => !existingMinuteQuoteDates.Contains(q.Date));
 
             // Assert
@@ -445,9 +445,9 @@ namespace QR.Business.Tests.Services
             // Act
             _marketService.UpdateAllCompaniesWithLatestQuotesAsync().Wait();
 
-            var maxInitialMinuteQuoteDate = companyQuotes.Where(q => q.TypeId == (int)QuoteTypeEnum.Minute).Select(cq => cq.Date).Max();
-            var minuteQuotesAfter = _quoteService.GetQuotes().Where(q => q.CompanyId == company.Id && q.TypeId == (int)QuoteTypeEnum.Minute).ToList();
-            var existingMinuteQuoteDates = new HashSet<DateTime>(companyQuotes.Where(q => q.TypeId == (int)QuoteTypeEnum.Minute).Select(q => q.Date));
+            var maxInitialMinuteQuoteDate = companyQuotes.Where(q => q.TypeId == (int)QuoteTypeEnum.OneMinute).Select(cq => cq.Date).Max();
+            var minuteQuotesAfter = _quoteService.GetQuotes().Where(q => q.CompanyId == company.Id && q.TypeId == (int)QuoteTypeEnum.OneMinute).ToList();
+            var existingMinuteQuoteDates = new HashSet<DateTime>(companyQuotes.Where(q => q.TypeId == (int)QuoteTypeEnum.OneMinute).Select(q => q.Date));
             var newMinuteQuotes = minuteQuotesAfter.Where(q => !existingMinuteQuoteDates.Contains(q.Date));
 
             // Assert
@@ -531,9 +531,9 @@ namespace QR.Business.Tests.Services
             // Act
             _marketService.UpdateAllCompaniesWithLatestQuotesAsync().Wait();
 
-            var maxInitialMinuteQuoteDate = companyQuotes.Where(q => q.TypeId == (int)QuoteTypeEnum.Minute).Select(cq => cq.Date).Max();
-            var minuteQuotesAfter = _quoteService.GetQuotes().Where(q => q.CompanyId == company.Id && q.TypeId == (int)QuoteTypeEnum.Minute).ToList();
-            var existingMinuteQuoteDates = new HashSet<DateTime>(companyQuotes.Where(q => q.TypeId == (int)QuoteTypeEnum.Minute).Select(q => q.Date));
+            var maxInitialMinuteQuoteDate = companyQuotes.Where(q => q.TypeId == (int)QuoteTypeEnum.OneMinute).Select(cq => cq.Date).Max();
+            var minuteQuotesAfter = _quoteService.GetQuotes().Where(q => q.CompanyId == company.Id && q.TypeId == (int)QuoteTypeEnum.OneMinute).ToList();
+            var existingMinuteQuoteDates = new HashSet<DateTime>(companyQuotes.Where(q => q.TypeId == (int)QuoteTypeEnum.OneMinute).Select(q => q.Date));
             var newMinuteQuotes = minuteQuotesAfter.Where(q => !existingMinuteQuoteDates.Contains(q.Date));
 
             // Assert
@@ -587,9 +587,9 @@ namespace QR.Business.Tests.Services
             // Act
             _marketService.UpdateAllCompaniesWithLatestQuotesAsync().Wait();
 
-            var maxInitialMinuteQuoteDate = companyQuotes.Where(q => q.TypeId == (int)QuoteTypeEnum.Minute).Select(cq => cq.Date).Max();
-            var minuteQuotesAfter = _quoteService.GetQuotes().Where(q => q.CompanyId == company.Id && q.TypeId == (int)QuoteTypeEnum.Minute).ToList();
-            var existingMinuteQuoteDates = new HashSet<DateTime>(companyQuotes.Where(q => q.TypeId == (int)QuoteTypeEnum.Minute).Select(q => q.Date));
+            var maxInitialMinuteQuoteDate = companyQuotes.Where(q => q.TypeId == (int)QuoteTypeEnum.OneMinute).Select(cq => cq.Date).Max();
+            var minuteQuotesAfter = _quoteService.GetQuotes().Where(q => q.CompanyId == company.Id && q.TypeId == (int)QuoteTypeEnum.OneMinute).ToList();
+            var existingMinuteQuoteDates = new HashSet<DateTime>(companyQuotes.Where(q => q.TypeId == (int)QuoteTypeEnum.OneMinute).Select(q => q.Date));
             var newMinuteQuotes = minuteQuotesAfter.Where(q => !existingMinuteQuoteDates.Contains(q.Date));
 
             // Assert
@@ -635,7 +635,7 @@ namespace QR.Business.Tests.Services
             var companyQuotes = FakeQuotesBuilder.CreateFakeDayMinuteQuotes(company, 0, todayDuringMarketOpen.TimeOfDay).ToList();
 
             // Invalidate one of the quotes
-            var quoteBeforeUpdate = companyQuotes.First(q => q.QuoteType == QuoteTypeEnum.Minute);
+            var quoteBeforeUpdate = companyQuotes.First(q => q.QuoteType == QuoteTypeEnum.OneMinute);
             var highBefore = quoteBeforeUpdate.High;
             var lowBefore = quoteBeforeUpdate.Low;
             var openBefore = quoteBeforeUpdate.Open;
@@ -681,7 +681,7 @@ namespace QR.Business.Tests.Services
             var companyQuotes = FakeQuotesBuilder.CreateFakeDayMinuteQuotes(company, 0, todayDuringMarketOpen.TimeOfDay).ToList();
 
             // Invalidate one of the quotes
-            var quoteBeforeUpdate = companyQuotes.First(q => q.QuoteType == QuoteTypeEnum.Minute);
+            var quoteBeforeUpdate = companyQuotes.First(q => q.QuoteType == QuoteTypeEnum.OneMinute);
             var highBefore = quoteBeforeUpdate.High;
             var lowBefore = quoteBeforeUpdate.Low;
             var openBefore = quoteBeforeUpdate.Open;
@@ -727,7 +727,7 @@ namespace QR.Business.Tests.Services
             var companyQuotes = FakeQuotesBuilder.CreateFakeDayMinuteQuotes(company, 0, todayDuringMarketOpen.TimeOfDay).ToList();
 
             // Invalidate one of the quotes
-            var quoteBeforeUpdate = companyQuotes.First(q => q.QuoteType == QuoteTypeEnum.Minute);
+            var quoteBeforeUpdate = companyQuotes.First(q => q.QuoteType == QuoteTypeEnum.OneMinute);
             var highBefore = quoteBeforeUpdate.High;
             var lowBefore = quoteBeforeUpdate.Low;
             var openBefore = quoteBeforeUpdate.Open;
@@ -773,7 +773,7 @@ namespace QR.Business.Tests.Services
             var companyQuotes = FakeQuotesBuilder.CreateFakeDayMinuteQuotes(company, 0, todayDuringMarketOpen.TimeOfDay).ToList();
 
             // Invalidate one of the quotes
-            var quoteBeforeUpdate = companyQuotes.First(q => q.QuoteType == QuoteTypeEnum.Minute);
+            var quoteBeforeUpdate = companyQuotes.First(q => q.QuoteType == QuoteTypeEnum.OneMinute);
             var highBefore = quoteBeforeUpdate.High;
             var lowBefore = quoteBeforeUpdate.Low;
             var openBefore = quoteBeforeUpdate.Open;
@@ -1488,7 +1488,7 @@ namespace QR.Business.Tests.Services
             // Assert
             Assert.IsNotNull(quotes);
             Assert.IsTrue(quotes.Count() == expectedNumQuotes);
-            Assert.IsTrue(quotes.First().QuoteType == QuoteTypeEnum.Minute);
+            Assert.IsTrue(quotes.First().QuoteType == QuoteTypeEnum.OneMinute);
         }
 
         [TestMethod]
